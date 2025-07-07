@@ -20,6 +20,13 @@ namespace Snake_C_
             }
             base.Dispose(disposing);
         }
+        public class DoubleBufferedDataGridView : DataGridView
+        {
+            public DoubleBufferedDataGridView()
+            {
+                this.DoubleBuffered = true;
+            }
+        }
 
         #region Windows Form Designer generated code
 
@@ -30,7 +37,7 @@ namespace Snake_C_
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            dataGridView1 = new DataGridView();
+            dataGridView1 = new DoubleBufferedDataGridView();
             button1 = new Button();
             button2 = new Button();
             contextMenuStrip1 = new ContextMenuStrip(components);
@@ -84,6 +91,7 @@ namespace Snake_C_
             button2.TabIndex = 2;
             button2.Text = "Stop";
             button2.UseVisualStyleBackColor = false;
+            button2.Click += button2_Click;
             // 
             // contextMenuStrip1
             // 
@@ -99,7 +107,7 @@ namespace Snake_C_
             label2.Name = "label2";
             label2.Size = new Size(64, 21);
             label2.TabIndex = 5;
-            label2.Text = "Score : ";
+            label2.Text = "Score : 0";
             // 
             // panel1
             // 
@@ -107,14 +115,13 @@ namespace Snake_C_
             panel1.Controls.Add(button1);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(label2);
-            panel1.Location = new Point(1381, 55);
+            panel1.Location = new Point(1382, 58);
             panel1.Name = "panel1";
             panel1.Size = new Size(401, 158);
             panel1.TabIndex = 6;
             // 
             // Form1
             // 
-
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(30, 30, 30);

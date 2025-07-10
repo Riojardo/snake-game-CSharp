@@ -18,6 +18,7 @@ namespace Snake_C_
         public Food(Snake moveSnake, DataGridView dataGridView)
         {
             randomColor = new Random();
+
             foodColors = new List<Color>
             {
             Color.Blue,
@@ -34,26 +35,28 @@ namespace Snake_C_
             Color.Fuchsia,
             Color.Aqua
             };
+
             Random rnd = new();
 
             bool isCorner = false;
-            
+
             foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));
 
             isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[0] ? true : isCorner;
-            isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount -1].Cells[0] ? true : isCorner;
+            isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[0] ? true : isCorner;
             isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[0] ? true : isCorner;
             isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
 
-            while ((moveSnake.head != null && moveSnake.head.Position == foodPosition) || (moveSnake.body != null && moveSnake.body.Contains(foodPosition)) || isCorner)
+            while ((moveSnake.head != null && moveSnake.head.Position == foodPosition) ||
+                   (moveSnake.body != null && moveSnake.body.Contains(foodPosition)) ||
+                   isCorner)
             {
-                foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));
+
+                foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));            
             }
             int index = randomColor.Next(foodColors.Count);
             foodColor = foodColors[index];
-
             dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y].Style.BackColor = foodColor;
-
         }
     }
 }

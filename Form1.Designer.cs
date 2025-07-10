@@ -37,6 +37,7 @@ namespace Snake_C_
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             dataGridView1 = new DoubleBufferedDataGridView();
             button1 = new Button();
             button2 = new Button();
@@ -44,10 +45,10 @@ namespace Snake_C_
             label2 = new Label();
             panel1 = new Panel();
             panel2 = new Panel();
-            button3 = new Button();
-            button4 = new Button();
-            button5 = new Button();
             label1 = new Label();
+            button5 = new Button();
+            button4 = new Button();
+            button3 = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
@@ -125,6 +126,7 @@ namespace Snake_C_
             panel1.Name = "panel1";
             panel1.Size = new Size(401, 158);
             panel1.TabIndex = 6;
+            panel1.Visible = false;
             // 
             // panel2
             // 
@@ -136,44 +138,50 @@ namespace Snake_C_
             panel2.Controls.Add(button3);
             panel2.Location = new Point(606, 216);
             panel2.Name = "panel2";
-            panel2.Size = new Size(900, 200);
+            panel2.Size = new Size(900, 236);
             panel2.TabIndex = 7;
-            // 
-            // button3
-            // 
-            button3.Location = new Point(63, 110);
-            button3.Name = "button3";
-            button3.Size = new Size(217, 46);
-            button3.TabIndex = 0;
-            button3.Text = "button3";
-            button3.UseVisualStyleBackColor = true;
-            // 
-            // button4
-            // 
-            button4.Location = new Point(369, 110);
-            button4.Name = "button4";
-            button4.Size = new Size(202, 46);
-            button4.TabIndex = 1;
-            button4.Text = "button4";
-            button4.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            button5.Location = new Point(657, 110);
-            button5.Name = "button5";
-            button5.Size = new Size(196, 46);
-            button5.TabIndex = 2;
-            button5.Text = "button5";
-            button5.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Location = new Point(118, 32);
             label1.Name = "label1";
-            label1.Size = new Size(38, 15);
+            label1.Size = new Size(644, 75);
             label1.TabIndex = 3;
-            label1.Text = "Welcome to my Snake game!\n\nControls: Use Z (up), Q (left), S (down), D (right).\n\nBefore you begin, please select your desired game board size and choose a difficulty level (this adjusts the snake's speed).";
+            label1.Text = resources.GetString("label1.Text");
+            // 
+            // button5
+            // 
+            button5.ForeColor = Color.Black;
+            button5.Location = new Point(657, 157);
+            button5.Name = "button5";
+            button5.Size = new Size(196, 46);
+            button5.TabIndex = 2;
+            button5.Text = "BIG !";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click_1;
+            // 
+            // button4
+            // 
+            button4.ForeColor = Color.Black;
+            button4.Location = new Point(357, 157);
+            button4.Name = "button4";
+            button4.Size = new Size(202, 46);
+            button4.TabIndex = 1;
+            button4.Text = "Average";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click_1;
+            // 
+            // button3
+            // 
+            button3.ForeColor = Color.Black;
+            button3.Location = new Point(49, 157);
+            button3.Name = "button3";
+            button3.Size = new Size(217, 46);
+            button3.TabIndex = 0;
+            button3.Text = "Small";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
             // 
             // Form1
             // 

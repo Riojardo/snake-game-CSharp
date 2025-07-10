@@ -11,20 +11,30 @@ namespace Snake_C_
 {
     public partial class Form1 : Form
     {
+        public enum MenuOption
+        {
+            SizeSelection,
+            DifficultySelection,
+            Etablished
+        }
+
+        public MenuOption CurrentMenuState = MenuOption.SizeSelection;
+
         private static System.Timers.Timer snakeTimer;
+        public static int parameterTime;
         static string executableDirectory = AppDomain.CurrentDomain.BaseDirectory;
         string iconePath = Path.Combine(executableDirectory, "images", "snakeIcone.ico");
         private Snake The_Snake;
-        private Food The_Food;
         private Point The_Objective;
         private Color New_Color;
         public Image _snakeEyeLeftImage;
         public Image _snakeEyeRightImage;
         Color initialSnakeColor = Color.Green;
-        Random chaos = new Random();
         public static int timerCounter = 0;
         public static int score = 0;
         public static int initial = 0;
+        public static int widthSize;
+        public static int heightSize;
         public static bool foodExist = false;
 
         public Form1()
@@ -34,8 +44,21 @@ namespace Snake_C_
             this.Dock = DockStyle.Fill;
             this.Text = "Snake Inc.";
             this.Name = "Snake Inc.";
+
+            this.Text = "Snake Inc. ";
+            if (File.Exists(iconePath))
+            {
+                this.Icon = new Icon(iconePath);
+            }
+
             createbackground();
             InitializeComponent();
+
+        }
+
+        private void StartGameSetup()
+        {
+            panel1.Visible = true;
             this.Load += new System.EventHandler(this.Loading);
             string leftImagePath = Path.Combine(executableDirectory, "images", "snake-eye-left.png");
             if (File.Exists(leftImagePath))
@@ -48,23 +71,20 @@ namespace Snake_C_
                 _snakeEyeRightImage = Image.FromFile(rightImagePath);
             }
             SetUpDataGridView();
-            dataGridView1.Location = new Point(50, 50);
-            dataGridView1.BorderStyle = BorderStyle.Fixed3D;
-            this.Text = "Snake Inc. ";
-            if (File.Exists(iconePath))
-            {
-                this.Icon = new Icon(iconePath);
-            }
+            dataGridView1.Location = widthSize == 21 ? new Point(150, 150) :
+                                     widthSize == 31 ? new Point(100, 100) : new Point(50, 50); ;
+
+            dataGridView1.BorderStyle = BorderStyle.Fixed3D;           
 
             this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.eyePlacing);
             dataGridView1.Invalidate();
-           
-            this.KeyPreview = true;      
+
+            this.KeyPreview = true;
 
             snakeTimer = new System.Timers.Timer();
-            snakeTimer.Interval = 333;
+            snakeTimer.Interval = parameterTime;
             snakeTimer.Elapsed += SnakeTimer_Tick; //
-            snakeTimer.AutoReset = true;           
+            snakeTimer.AutoReset = true;
 
             button2.Enabled = false;
         }
@@ -78,8 +98,8 @@ namespace Snake_C_
         private void SetUpDataGridView()
         {
             dataGridView1.Visible = false;
-            dataGridView1.ColumnCount = 41;
-            dataGridView1.RowCount = 41;
+            dataGridView1.ColumnCount = widthSize;
+            dataGridView1.RowCount = heightSize;
             dataGridView1.RowTemplate.Height = 30;
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
@@ -162,8 +182,8 @@ namespace Snake_C_
                 e.SuppressKeyPress = true;
             }
             if (takeTurn)
-            {  
-                SnakeTimer_Tick(null, null); 
+            {
+                SnakeTimer_Tick(null, null);
             }
         }
 
@@ -185,12 +205,12 @@ namespace Snake_C_
                         createFood();
                     }
                     The_Snake = Snake.Move(The_Snake, dataGridView1, The_Objective);
-                
-                }              
+
+                }
             }
             catch (System.ArgumentOutOfRangeException)
-            {gameOver();}
-            if (dataGridView1.InvokeRequired) 
+            { gameOver(); }
+            if (dataGridView1.InvokeRequired)
             {
                 dataGridView1.Invoke(new System.Windows.Forms.MethodInvoker(delegate
                 {
@@ -216,81 +236,81 @@ namespace Snake_C_
 
         private void eyePlacing(object sender, DataGridViewCellPaintingEventArgs e)
         {
-                int imageWidth = _snakeEyeLeftImage.Width;
-                int imageHeight = _snakeEyeLeftImage.Height;
-                int destX = 0;
-                int destY = 0;
+            int imageWidth = _snakeEyeLeftImage.Width;
+            int imageHeight = _snakeEyeLeftImage.Height;
+            int destX = 0;
+            int destY = 0;
 
-                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
+            {
+                if (The_Snake != null &&
+                    e.RowIndex == The_Snake.head.Position.X &&
+                    e.ColumnIndex == The_Snake.head.Position.Y)
                 {
-                    if (The_Snake != null &&
-                        e.RowIndex == The_Snake.head.Position.X &&
-                        e.ColumnIndex == The_Snake.head.Position.Y)
+                    e.PaintBackground(e.ClipBounds, true);
+                    if (_snakeEyeLeftImage != null)
                     {
-                        e.PaintBackground(e.ClipBounds, true);
-                        if (_snakeEyeLeftImage != null)
+
+                        switch (Snake.direction)
                         {
-
-                            switch (Snake.direction)
-                            {
-                                case "Down":
-                                    destX = e.CellBounds.X;
-                                    destY = e.CellBounds.Bottom - imageHeight;
-                                    break;
-                                case "Up":
-                                    destX = e.CellBounds.X;
-                                    destY = e.CellBounds.Y; 
-                                    break;
-                                case "Left":
-                                    destX = e.CellBounds.X;
-                                    destY = e.CellBounds.Y;
-                                    break;
-                                case "Right":                               
-                                    destX = e.CellBounds.Right - imageWidth;
-                                    destY = e.CellBounds.Y;
-                                    break;
-                            }                      
-                            Rectangle destRect = new Rectangle(destX, destY, imageWidth, imageHeight);
-                            e.Graphics.DrawImage(_snakeEyeLeftImage, destRect);
+                            case "Down":
+                                destX = e.CellBounds.X;
+                                destY = e.CellBounds.Bottom - imageHeight;
+                                break;
+                            case "Up":
+                                destX = e.CellBounds.X;
+                                destY = e.CellBounds.Y;
+                                break;
+                            case "Left":
+                                destX = e.CellBounds.X;
+                                destY = e.CellBounds.Y;
+                                break;
+                            case "Right":
+                                destX = e.CellBounds.Right - imageWidth;
+                                destY = e.CellBounds.Y;
+                                break;
                         }
-
-                        if (_snakeEyeRightImage != null)
-                        {
-                            switch(Snake.direction)
-                            {
-                                case "Down":
-                                    destX = e.CellBounds.Right - imageWidth;
-                                    destY = e.CellBounds.Bottom - imageHeight;
-                                    break;
-                                case "Up":                            
-                                    destX = e.CellBounds.Right - imageWidth; 
-                                    destY = e.CellBounds.Y; 
-                                    break;
-                                case "Left":
-                                    destX = e.CellBounds.X;
-                                    destY = e.CellBounds.Bottom - imageHeight; 
-                                    break;
-                                case "Right":
-                                    destX = e.CellBounds.Right - imageWidth;
-                                    destY = e.CellBounds.Bottom - imageHeight;
-                                    break;
-                            }                       
-
-                            Rectangle destRect = new Rectangle(destX, destY, imageWidth, imageHeight);
-                            e.Graphics.DrawImage(_snakeEyeRightImage, destRect);
-                        }
-                        e.Handled = true;
+                        Rectangle destRect = new Rectangle(destX, destY, imageWidth, imageHeight);
+                        e.Graphics.DrawImage(_snakeEyeLeftImage, destRect);
                     }
+
+                    if (_snakeEyeRightImage != null)
+                    {
+                        switch (Snake.direction)
+                        {
+                            case "Down":
+                                destX = e.CellBounds.Right - imageWidth;
+                                destY = e.CellBounds.Bottom - imageHeight;
+                                break;
+                            case "Up":
+                                destX = e.CellBounds.Right - imageWidth;
+                                destY = e.CellBounds.Y;
+                                break;
+                            case "Left":
+                                destX = e.CellBounds.X;
+                                destY = e.CellBounds.Bottom - imageHeight;
+                                break;
+                            case "Right":
+                                destX = e.CellBounds.Right - imageWidth;
+                                destY = e.CellBounds.Bottom - imageHeight;
+                                break;
+                        }
+
+                        Rectangle destRect = new Rectangle(destX, destY, imageWidth, imageHeight);
+                        e.Graphics.DrawImage(_snakeEyeRightImage, destRect);
+                    }
+                    e.Handled = true;
                 }
+            }
         }
 
         public void createSnake()
         {
-            Point initialHeadPosition = new Point((dataGridView1.RowCount -3)/2, (dataGridView1.ColumnCount +1) / 2);
+            Point initialHeadPosition = new Point((dataGridView1.RowCount - 3) / 2, (dataGridView1.ColumnCount + 1) / 2);
             List<Point> initialBodySegments = new List<Point>();
-            initialBodySegments.Add(new Point((dataGridView1.RowCount -5) / 2, (dataGridView1.ColumnCount + 1) / 2));
-            initialBodySegments.Add(new Point((dataGridView1.RowCount -7) / 2, (dataGridView1.ColumnCount + 1) / 2));
-            
+            initialBodySegments.Add(new Point((dataGridView1.RowCount - 5) / 2, (dataGridView1.ColumnCount + 1) / 2));
+            initialBodySegments.Add(new Point((dataGridView1.RowCount - 7) / 2, (dataGridView1.ColumnCount + 1) / 2));
+
             The_Snake = new Snake(initialSnakeColor, initialHeadPosition, initialBodySegments);
             dataGridView1.Rows[The_Snake.head.Position.X].Cells[The_Snake.head.Position.Y].Style.BackColor = The_Snake.snakeColor;
             foreach (Point part in The_Snake.body)
@@ -301,7 +321,7 @@ namespace Snake_C_
 
         public void createFood()
         {
-            Food The_Food = new Food(The_Snake,dataGridView1);
+            Food The_Food = new Food(The_Snake, dataGridView1);
             The_Objective = The_Food.foodPosition;
             New_Color = The_Food.foodColor;
             foodExist = true;
@@ -312,7 +332,7 @@ namespace Snake_C_
             if (snakeTimer != null)
             {
                 snakeTimer.Stop();
-            }          
+            }
             this.KeyDown += keyDown;
             if (!foodExist)
             {
@@ -321,14 +341,16 @@ namespace Snake_C_
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
                 {
                     for (int j = 0; j < dataGridView1.Columns.Count; j++)
-                    { 
-                       dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black; }                   
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black;
                     }
+                }
+                score = 0;
+                label2.Text = "Score : " + score.ToString();
                 createSnake();
                 createFood();
-                }        
+            }
             snakeTimer.Start();
-            //createFood();
             button1.Enabled = false;
             button2.Enabled = true;
         }
@@ -350,83 +372,7 @@ namespace Snake_C_
                 foodExist = false;
                 snakeTimer.Stop();
                 The_Snake = null;
-                for (int i = 0; i < dataGridView1.RowCount; i++) // Boucle sur les lignes (Y)
-                {
-                    for (int j = 0; j < dataGridView1.ColumnCount; j++) // Boucle sur les colonnes (X)
-                    {
-                        // Par défaut, la cellule est noire (fond)
-                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black;
-
-                        // Logique pour les lettres "GAME" (toutes les coordonnées ajustées)
-                        // Les valeurs numériques sont directement modifiées pour le décalage.
-                        // G (originalement à partir de ligne 15, col 12) -> maintenant à partir de ligne 10, col 9
-                        if ((i == 10 && j >= 9 && j <= 12) || // Haut
-                            (i == 11 && (j == 8 || j == 12)) || // Côtés
-                            (i == 12 && j == 8) ||
-                            (i == 13 && ((j >= 8 && j <= 8) || (j >= 11 && j <= 12))) || // Milieu avec barre
-                            (i == 14 && (j == 8 || j == 12)) ||
-                            (i == 15 && (j >= 9 && j <= 12))) // Bas
-                        {
-                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        }
-                        // A (originalement à partir de ligne 15, col 18) -> maintenant à partir de ligne 10, col 15
-                        else if ((i == 10 && j >= 15 && j <= 17) || // Haut
-                                 ((i >= 11 && i <= 12) && (j == 14 || j == 18)) || // Côtés
-                                 (i == 13 && j >= 14 && j <= 18) || // Barre du milieu
-                                 ((i >= 14 && i <= 15) && (j == 14 || j == 18))) // Bas des côtés
-                        {
-                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        }
-                        // M (originalement à partir de ligne 15, col 24) -> maintenant à partir de ligne 10, col 21
-                        else if (((i >= 10 && i <= 15) && (j == 21 || j == 25)) || // Montants
-                                 (i == 11 && (j == 22 || j == 24)) || // Diagonales haut
-                                 (i == 12 && j == 23)) // Diagonales milieu
-                        {
-                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        }
-                        // E (originalement à partir de ligne 15, col 31) -> maintenant à partir de ligne 10, col 28
-                        else if (((i >= 10 && i <= 15) && j == 28) || // Barre verticale
-                                 (i == 10 && j >= 28 && j <= 31) || // Barre horizontale haut
-                                 (i == 13 && j >= 28 && j <= 30) || // Barre horizontale milieu
-                                 (i == 15 && j >= 28 && j <= 31)) // Barre horizontale bas
-                        {
-                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        }
-
-                        // Logique pour les lettres "OVER" (positions originales de référence : ligne 24, col 13)
-                        // O (originalement à partir de ligne 24, col 13) -> maintenant à partir de ligne 19, col 10
-                        else if ((i == 19 && j >= 10 && j <= 12) || // Haut
-                                 ((i >= 20 && i <= 22) && (j == 9 || j == 13)) || // Côtés
-                                 (i == 23 && j >= 10 && j <= 12)) // Bas
-                        {
-                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        }
-                        // V (originalement à partir de ligne 24, col 19) -> maintenant à partir de ligne 19, col 16
-                        else if (((i >= 19 && i <= 21) && (j == 16 || j == 20)) || // Bras hauts
-                                 (i == 22 && (j == 17 || j == 19)) || // Bras milieux
-                                 (i == 23 && j == 18)) // Pointe
-                        {
-                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        }
-                        // E (originalement à partir de ligne 24, col 26) -> maintenant à partir de ligne 19, col 23
-                        else if (((i >= 19 && i <= 24) && j == 23) || // Barre verticale
-                                 (i == 19 && j >= 23 && j <= 26) || // Barre horizontale haut
-                                 (i == 22 && j >= 23 && j <= 25) || // Barre horizontale milieu
-                                 (i == 24 && j >= 23 && j <= 26)) // Barre horizontale bas
-                        {
-                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        }
-                        // R (originalement à partir de ligne 24, col 31) -> maintenant à partir de ligne 19, col 28
-                        else if (((i >= 19 && i <= 24) && j == 28) || // Barre verticale
-                                 (i == 19 && j >= 28 && j <= 30) || // Barre horizontale haut
-                                 ((i >= 20 && i <= 21) && j == 31) || // Côté haut
-                                 (i == 22 && j >= 28 && j <= 30) || // Barre horizontale milieu
-                                 ((i >= 23 && i <= 24) && j == 31)) // Jambe diagonale
-                        {
-                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
-                        }
-                    }
-                }
+                DisplayGame_Over(widthSize);
                 dataGridView1.Invalidate();
                 initial = 0;
                 if (this.InvokeRequired)
@@ -441,10 +387,141 @@ namespace Snake_C_
                 {
                     button1.Enabled = true;
                     button2.Enabled = false;
-                }               
+                }
             }
         }
-                    
+
+        public void DisplayGame_Over(int widthSize)
+        {
+            // Clear the grid by setting all cells to black
+            for (int i = 0; i < dataGridView1.RowCount; i++)
+            {
+                for (int j = 0; j < dataGridView1.ColumnCount; j++)
+                {
+                    dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black;
+                }
+            }
+
+            // --- Define the base offsets for centering the entire text block ---
+            // The target text block width is 19 cells.
+            // The target text block height (assuming 5-cell tall letters + 3 cell vertical spacing) is 5 + 3 + 5 = 13 cells.
+            int desiredTextWidth = 19;
+            int desiredTextHeight = 13; // Calculated from the new letter sizes and spacing
+
+            // Calculate dynamic offsets for centering based on the actual grid widthSize
+            int startColumnOffset = (widthSize - desiredTextWidth) / 2;
+            if (startColumnOffset < 0) startColumnOffset = 0; // Prevent negative offset
+
+            int startRowOffset = (widthSize - desiredTextHeight) / 2;
+            if (startRowOffset < 0) startRowOffset = 0; // Prevent negative offset
+
+            // Define the fixed starting rows for each line relative to the startRowOffset
+            int baseRowGame = startRowOffset;
+            int baseRowOver = startRowOffset + 8; // 5 (letter height) + 3 (vertical spacing) = 8
+
+
+            // --- Iterate through each cell and set color based on new, smaller coordinates ---
+            for (int i = 0; i < dataGridView1.RowCount; i++)
+            {
+                for (int j = 0; j < dataGridView1.ColumnCount; j++)
+                {
+                    dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black; // Default to black
+
+                    // --- G (4x6 cells) ---
+                    // Relative to (baseRowGame, startColumnOffset)
+                    if ((i == baseRowGame + 0 && j >= startColumnOffset + 1 && j <= startColumnOffset + 3) || // Top bar
+                         (i == baseRowGame + 1 && j == startColumnOffset + 0) ||                               // Left side
+                         (i == baseRowGame + 2 && (j == startColumnOffset + 0 || j == startColumnOffset + 2 || j == startColumnOffset + 3)) || // Middle bar + right
+                         (i == baseRowGame + 3 && (j == startColumnOffset + 0 || j == startColumnOffset + 3)) || // Left side + right
+                         (i == baseRowGame + 4 && j == startColumnOffset + 0) ||                               // Left side
+                         (i == baseRowGame + 5 && j >= startColumnOffset + 1 && j <= startColumnOffset + 3))   // Bottom bar
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    }
+                    // --- A (4x6 cells) ---
+                    // Relative to (baseRowGame, startColumnOffset + 5)
+                    else if ((i == baseRowGame + 0 && (j == startColumnOffset + 5 + 1 || j == startColumnOffset + 5 + 2)) || // Top point
+                              (i == baseRowGame + 1 && (j == startColumnOffset + 5 + 0 || j == startColumnOffset + 5 + 3)) || // Sides
+                              (i == baseRowGame + 2 && (j == startColumnOffset + 5 + 0 || j == startColumnOffset + 5 + 3)) || // Sides
+                              (i == baseRowGame + 3 && j >= startColumnOffset + 5 + 0 && j <= startColumnOffset + 5 + 3) ||  // Middle bar
+                              (i == baseRowGame + 4 && (j == startColumnOffset + 5 + 0 || j == startColumnOffset + 5 + 3)) || // Sides
+                              (i == baseRowGame + 5 && (j == startColumnOffset + 5 + 0 || j == startColumnOffset + 5 + 3)))  // Bottom sides
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    }
+                    // --- M (4x6 cells) ---
+                    // Relative to (baseRowGame, startColumnOffset + 10)
+                    else if ((i >= baseRowGame + 0 && i <= baseRowGame + 5 && (j == startColumnOffset + 10 + 0 || j == startColumnOffset + 10 + 3)) || // Posts
+                              (i == baseRowGame + 1 && (j == startColumnOffset + 10 + 1 || j == startColumnOffset + 10 + 2)) || // Diagonals
+                              (i == baseRowGame + 2 && (j == startColumnOffset + 10 + 1 || j == startColumnOffset + 10 + 2))) // Diagonals (inner parts)
+                                                                                                                              // The original M definition had (1,0),(1,1),(1,3) and (2,0),(2,2),(2,4). Let's use a simpler 4x6 M
+                                                                                                                              // This simplified M below might be better for 4-wide.
+                                                                                                                              // Let's re-use the M from the previous response which was good for 4x6
+                    {
+                        // M from the previous detailed response (4x6)
+                        if (((i >= baseRowGame + 0 && i <= baseRowGame + 5) && (j == startColumnOffset + 10 + 0 || j == startColumnOffset + 10 + 3)) || // Vertical bars
+                             (i == baseRowGame + 1 && (j == startColumnOffset + 10 + 1 || j == startColumnOffset + 10 + 2)) || // Inner diagonals
+                             (i == baseRowGame + 2 && (j == startColumnOffset + 10 + 1 || j == startColumnOffset + 10 + 2))) // Inner diagonals
+                        {
+                            dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
+                        }
+                    }
+                    // --- E (4x6 cells) ---
+                    // Relative to (baseRowGame, startColumnOffset + 15)
+                    else if (((i >= baseRowGame + 0 && i <= baseRowGame + 5) && j == startColumnOffset + 15 + 0) || // Vertical bar
+                              (i == baseRowGame + 0 && j >= startColumnOffset + 15 + 0 && j <= startColumnOffset + 15 + 3) || // Top bar
+                              (i == baseRowGame + 2 && j >= startColumnOffset + 15 + 0 && j <= startColumnOffset + 15 + 2) || // Middle bar
+                              (i == baseRowGame + 5 && j >= startColumnOffset + 15 + 0 && j <= startColumnOffset + 15 + 3)) // Bottom bar
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    }
+
+                    // Logique pour les lettres "OVER"
+                    // O: (4 wide) | V: (4 wide) | E: (4 wide) | R: (4 wide)
+                    // Total: (4+1) + (4+1) + (4+1) + 4 = 19 cells.
+
+                    // --- O (4x6 cells) ---
+                    // Relative to (baseRowOver, startColumnOffset)
+                    else if ((i == baseRowOver + 0 && j >= startColumnOffset + 1 && j <= startColumnOffset + 2) || // Top curve
+                              ((i >= baseRowOver + 1 && i <= baseRowOver + 4) && (j == startColumnOffset + 0 || j == startColumnOffset + 3)) || // Sides
+                              (i == baseRowOver + 5 && j >= startColumnOffset + 1 && j <= startColumnOffset + 2)) // Bottom curve
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    }
+                    // --- V (4x6 cells) ---
+                    // Relative to (baseRowOver, startColumnOffset + 5)
+                    else if (((i >= baseRowOver + 0 && i <= baseRowOver + 2) && (j == startColumnOffset + 5 + 0 || j == startColumnOffset + 5 + 3)) || // Top arms
+                              ((i >= baseRowOver + 3 && i <= baseRowOver + 5) && (j == startColumnOffset + 5 + 1 || j == startColumnOffset + 5 + 2))) // Bottom V
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    }
+                    // --- E (4x6 cells) ---
+                    // Relative to (baseRowOver, startColumnOffset + 10)
+                    else if (((i >= baseRowOver + 0 && i <= baseRowOver + 5) && j == startColumnOffset + 10 + 0) || // Vertical bar
+                              (i == baseRowOver + 0 && j >= startColumnOffset + 10 + 0 && j <= startColumnOffset + 10 + 3) || // Top bar
+                              (i == baseRowOver + 2 && j >= startColumnOffset + 10 + 0 && j <= startColumnOffset + 10 + 2) || // Middle bar
+                              (i == baseRowOver + 5 && j >= startColumnOffset + 10 + 0 && j <= startColumnOffset + 10 + 3)) // Bottom bar
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    }
+                    // --- R (4x6 cells) ---
+                    // Relative to (baseRowOver, startColumnOffset + 15)
+                    else if (((i >= baseRowOver + 0 && i <= baseRowOver + 5) && j == startColumnOffset + 15 + 0) || // Vertical bar
+                              (i == baseRowOver + 0 && j >= startColumnOffset + 15 + 0 && j <= startColumnOffset + 15 + 2) || // Top curve
+                              ((i >= baseRowOver + 1 && i <= baseRowOver + 2) && j == startColumnOffset + 15 + 3) || // Right side of top curve
+                              (i == baseRowOver + 3 && j >= startColumnOffset + 15 + 0 && j <= startColumnOffset + 15 + 2) || // Middle bar
+                              (i == baseRowOver + 4 && j == startColumnOffset + 15 + 3) || // Leg (diagonal)
+                              (i == baseRowOver + 5 && j == startColumnOffset + 15 + 3)) // Leg (bottom)
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
+                    }
+                }
+            }
+
+            // Invalidate the DataGridView to force a redraw
+            dataGridView1.Invalidate();
+        }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -456,6 +533,63 @@ namespace Snake_C_
             button1.Enabled = true;
             snakeTimer.Stop();
             button2.Enabled = false;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (CurrentMenuState == MenuOption.SizeSelection)
+            {
+                CurrentMenuState = MenuOption.DifficultySelection;
+                button3.Text = "Slow";
+                button4.Text = "Average";
+                button5.Text = "Fast";
+                widthSize = 21;
+                heightSize = 21;
+            }
+            else if (CurrentMenuState == MenuOption.DifficultySelection)
+            {
+                parameterTime = 333;
+                panel2.Visible = false;
+                StartGameSetup();
+            }
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            if (CurrentMenuState == MenuOption.SizeSelection)
+            {
+                CurrentMenuState = MenuOption.DifficultySelection;
+                button3.Text = "Slow";
+                button4.Text = "Average";
+                button5.Text = "Fast";
+                widthSize = 31;
+                heightSize = 31;
+            }
+            else if (CurrentMenuState == MenuOption.DifficultySelection)
+            {
+                parameterTime = 250;
+                panel2.Visible = false;
+                StartGameSetup();
+            }
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            if (CurrentMenuState == MenuOption.SizeSelection)
+            {
+                CurrentMenuState = MenuOption.DifficultySelection;
+                button3.Text = "Slow";
+                button4.Text = "Average";
+                button5.Text = "Fast";
+                widthSize = 41;
+                heightSize = 41;
+            }
+            else if (CurrentMenuState == MenuOption.DifficultySelection)
+            {
+                parameterTime = 166;
+                panel2.Visible = false;
+                StartGameSetup();
+            }
         }
 
         /*      private void startGame()

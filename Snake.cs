@@ -37,6 +37,7 @@ namespace Snake_C_
         }
         public static Snake Move(Snake moveSnake, DataGridView dataGridView, Point positionFood)
         {
+            
             Point movedHead = moveSnake.head.Position;
             Point newPositionHead = new Point();
             List<Point> newBody = new List<Point>();
@@ -74,7 +75,9 @@ namespace Snake_C_
                 Form1.foodExist = false;
                 Form1.score++;
             }
-            return movedSnake;          
+            return movedSnake;
+            
+ 
         }  
     }   
 }

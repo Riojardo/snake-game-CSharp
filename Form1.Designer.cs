@@ -43,8 +43,14 @@ namespace Snake_C_
             contextMenuStrip1 = new ContextMenuStrip(components);
             label2 = new Label();
             panel1 = new Panel();
+            panel2 = new Panel();
+            button3 = new Button();
+            button4 = new Button();
+            button5 = new Button();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
+            panel2.SuspendLayout();
             SuspendLayout();
             // 
             // dataGridView1
@@ -105,7 +111,7 @@ namespace Snake_C_
             label2.ForeColor = Color.White;
             label2.Location = new Point(29, 120);
             label2.Name = "label2";
-            label2.Size = new Size(64, 21);
+            label2.Size = new Size(73, 21);
             label2.TabIndex = 5;
             label2.Text = "Score : 0";
             // 
@@ -120,12 +126,62 @@ namespace Snake_C_
             panel1.Size = new Size(401, 158);
             panel1.TabIndex = 6;
             // 
+            // panel2
+            // 
+            panel2.BackColor = Color.Gray;
+            panel2.BorderStyle = BorderStyle.Fixed3D;
+            panel2.Controls.Add(label1);
+            panel2.Controls.Add(button5);
+            panel2.Controls.Add(button4);
+            panel2.Controls.Add(button3);
+            panel2.Location = new Point(606, 216);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(900, 200);
+            panel2.TabIndex = 7;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(63, 110);
+            button3.Name = "button3";
+            button3.Size = new Size(217, 46);
+            button3.TabIndex = 0;
+            button3.Text = "button3";
+            button3.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(369, 110);
+            button4.Name = "button4";
+            button4.Size = new Size(202, 46);
+            button4.TabIndex = 1;
+            button4.Text = "button4";
+            button4.UseVisualStyleBackColor = true;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(657, 110);
+            button5.Name = "button5";
+            button5.Size = new Size(196, 46);
+            button5.TabIndex = 2;
+            button5.Text = "button5";
+            button5.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(118, 32);
+            label1.Name = "label1";
+            label1.Size = new Size(38, 15);
+            label1.TabIndex = 3;
+            label1.Text = "Welcome to my Snake game!\n\nControls: Use Z (up), Q (left), S (down), D (right).\n\nBefore you begin, please select your desired game board size and choose a difficulty level (this adjusts the snake's speed).";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(30, 30, 30);
             ClientSize = new Size(1596, 670);
+            Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(dataGridView1);
             ForeColor = Color.WhiteSmoke;
@@ -135,6 +191,8 @@ namespace Snake_C_
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             ResumeLayout(false);
         }
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -143,12 +201,16 @@ namespace Snake_C_
         }
 
         #endregion
-
-        private DataGridView dataGridView1;
         private Button button1;
         private Button button2;
         private ContextMenuStrip contextMenuStrip1;
         private Label label2;
         private Panel panel1;
+        private Panel panel2;
+        private DoubleBufferedDataGridView dataGridView1;
+        private Label label1;
+        private Button button5;
+        private Button button4;
+        private Button button3;
     }
 }

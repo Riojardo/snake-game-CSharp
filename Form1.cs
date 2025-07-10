@@ -69,7 +69,6 @@ namespace Snake_C_
             button2.Enabled = false;
         }
 
-
         private void createbackground()
         {
             string imagePath = Path.Combine(executableDirectory, "images", "snakide.png");
@@ -132,6 +131,7 @@ namespace Snake_C_
                 dataGridView1.ClearSelection();
             }
         }
+
         private void keyDown(object sender, KeyEventArgs e)
         {
             bool takeTurn = false;
@@ -286,11 +286,11 @@ namespace Snake_C_
 
         public void createSnake()
         {
-            Point initialHeadPosition = new Point(18, 21);
+            Point initialHeadPosition = new Point((dataGridView1.RowCount -3)/2, (dataGridView1.ColumnCount +1) / 2);
             List<Point> initialBodySegments = new List<Point>();
-            initialBodySegments.Add(new Point(17, 21));
-            initialBodySegments.Add(new Point(16, 21));
-
+            initialBodySegments.Add(new Point((dataGridView1.RowCount -5) / 2, (dataGridView1.ColumnCount + 1) / 2));
+            initialBodySegments.Add(new Point((dataGridView1.RowCount -7) / 2, (dataGridView1.ColumnCount + 1) / 2));
+            
             The_Snake = new Snake(initialSnakeColor, initialHeadPosition, initialBodySegments);
             dataGridView1.Rows[The_Snake.head.Position.X].Cells[The_Snake.head.Position.Y].Style.BackColor = The_Snake.snakeColor;
             foreach (Point part in The_Snake.body)

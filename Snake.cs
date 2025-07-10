@@ -32,8 +32,7 @@ namespace Snake_C_
 
             public Head(Point position)
             {
-                this.Position = position;
-             
+                this.Position = position;             
             }
         }
         public static Snake Move(Snake moveSnake, DataGridView dataGridView, Point positionFood)
@@ -77,7 +76,5 @@ namespace Snake_C_
             }
             return movedSnake;          
         }  
-
-    }
-    
+    }   
 }

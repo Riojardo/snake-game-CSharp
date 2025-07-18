@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Snake_Csharp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0b7dbec189a7be3aecf87144e33e4462b249179")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f84c5cc95a56c89ee94aee75f9d316bc8d3148cb")]
 [assembly: System.Reflection.AssemblyProductAttribute("Snake_Csharp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Snake_Csharp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

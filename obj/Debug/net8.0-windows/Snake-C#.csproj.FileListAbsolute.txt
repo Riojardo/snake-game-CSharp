@@ -1,0 +1,16 @@
+C:\Users\Robin\source\repos\Snake-C#\bin\Debug\net8.0-windows\Snake-C#.exe
+C:\Users\Robin\source\repos\Snake-C#\bin\Debug\net8.0-windows\Snake-C#.deps.json
+C:\Users\Robin\source\repos\Snake-C#\bin\Debug\net8.0-windows\Snake-C#.runtimeconfig.json
+C:\Users\Robin\source\repos\Snake-C#\bin\Debug\net8.0-windows\Snake-C#.dll
+C:\Users\Robin\source\repos\Snake-C#\bin\Debug\net8.0-windows\Snake-C#.pdb
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake_C_.Form1.resources
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake-C#.csproj.GenerateResource.cache
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake-C#.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake-C#.AssemblyInfoInputs.cache
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake-C#.AssemblyInfo.cs
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake-C#.csproj.CoreCompileInputs.cache
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake-C#.dll
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\refint\Snake-C#.dll
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake-C#.pdb
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\Snake-C#.genruntimeconfig.cache
+C:\Users\Robin\source\repos\Snake-C#\obj\Debug\net8.0-windows\ref\Snake-C#.dll

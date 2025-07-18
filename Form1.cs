@@ -1,11 +1,11 @@
 
 using System;
 using System.IO;
+using System.Media;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
-
 
 namespace Snake_C_
 {
@@ -57,27 +57,22 @@ namespace Snake_C_
             InitializeComponent();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private void StartGameSetup()
         {
             panel1.Visible = true;
             this.Load += new System.EventHandler(this.Loading);
-            string leftImagePath = Path.Combine(executableDirectory, "images", "snake-eye-left.png");
-            if (File.Exists(leftImagePath))
-            {
-                _snakeEyeLeftImage = Image.FromFile(leftImagePath);
-            }
-            string rightImagePath = Path.Combine(executableDirectory, "images", "snake-eye-right.png");
-            if (File.Exists(rightImagePath))
-            {
-                _snakeEyeRightImage = Image.FromFile(rightImagePath);
-            }
+            createImageEyes();
             SetUpDataGridView();
             dataGridView1.Location = widthSize == 21 ? new Point(150, 150) :
                                      widthSize == 31 ? new Point(100, 100) : new Point(50, 50);
 
             dataGridView1.BorderStyle = BorderStyle.Fixed3D;
 
-            this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.eyePlacing);
             dataGridView1.Invalidate();
 
             this.KeyPreview = true;
@@ -88,6 +83,21 @@ namespace Snake_C_
             snakeTimer.AutoReset = true;
 
             button2.Enabled = false;
+        }
+
+        private void createImageEyes()
+        {
+            string leftImagePath = Path.Combine(executableDirectory, "images", "snake-eye-left.png");
+            if (File.Exists(leftImagePath))
+            {
+                _snakeEyeLeftImage = Image.FromFile(leftImagePath);
+            }
+            string rightImagePath = Path.Combine(executableDirectory, "images", "snake-eye-right.png");
+            this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.eyePlacing);
+            if (File.Exists(rightImagePath))
+            {
+                _snakeEyeRightImage = Image.FromFile(rightImagePath);
+            }
         }
 
         private void createbackground()
@@ -125,9 +135,9 @@ namespace Snake_C_
             dataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.Single;
             dataGridView1.GridColor = SystemColors.ActiveBorder;
 
-            
+
             dataGridView1.Width = (dataGridView1.ColumnCount * 25) + 3;
-            dataGridView1.Height = (dataGridView1.RowCount * 25) + 3; 
+            dataGridView1.Height = (dataGridView1.RowCount * 25) + 3;
 
             for (int i = 0; i < dataGridView1.RowCount; i++)
             {
@@ -136,7 +146,7 @@ namespace Snake_C_
                     dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black;
                 }
             }
-            dataGridView1.GridColor = Color.Gray; 
+            dataGridView1.GridColor = Color.Gray;
 
             dataGridView1.ClearSelection();
             dataGridView1.Update();
@@ -153,6 +163,14 @@ namespace Snake_C_
                 }
                 dataGridView1.ClearSelection();
             }
+        }
+
+        public void playSimpleSound(string sound)
+        {
+            string soundLocation= Path.Combine(executableDirectory, "sounds", sound + ".wav");
+            SoundPlayer simpleSound = new SoundPlayer(soundLocation);
+            simpleSound.Play();
+            //MessageBox.Show(soundLocation);
         }
 
         private void keyDown(object sender, KeyEventArgs e)
@@ -188,14 +206,14 @@ namespace Snake_C_
             {
                 SnakeTimer_Tick(null, null);
             }
-        }
+            }
 
         private void SnakeTimer_Tick(object sender, EventArgs e)
         {
             timerCounter++;
             try
             {
-                if (The_Snake != null )
+                if (The_Snake != null)
                 {
                     if (The_Snake.body.Contains(The_Snake.head.Position))
                     {
@@ -208,15 +226,12 @@ namespace Snake_C_
                         {
                             The_Snake.snakeColor = The_Food.foodColor;
                         }
-                    }                  
+                    }
                     The_Snake = Snake.Move(The_Snake, dataGridView1, The_Objective, this);
                 }
             }
             catch (Exception outOfRange)
-            {
-                //MessageBox.Show(outOfRange.Message);
-                //gameOver();           
-            }
+            { }
             if (dataGridView1.InvokeRequired)
             {
                 dataGridView1.Invoke(new System.Windows.Forms.MethodInvoker(delegate
@@ -243,71 +258,76 @@ namespace Snake_C_
 
         private void eyePlacing(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            int imageWidth = _snakeEyeLeftImage.Width;
-            int imageHeight = _snakeEyeLeftImage.Height;
-            int destX = 0;
-            int destY = 0;
-
-            if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-            {
-                if (The_Snake != null &&
-                    e.RowIndex == The_Snake.head.Position.X &&
-                    e.ColumnIndex == The_Snake.head.Position.Y)
+            try
+            { 
+                if (_snakeEyeLeftImage != null && _snakeEyeRightImage != null)
                 {
-                    e.PaintBackground(e.ClipBounds, true);
-                    if (_snakeEyeLeftImage != null)
+                    int imageWidth = _snakeEyeLeftImage.Width;
+                    int imageHeight = _snakeEyeLeftImage.Height;
+                    int destX = 0;
+                    int destY = 0;
+
+                    if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
                     {
-
-                        switch (Snake.direction)
+                        if (The_Snake != null &&
+                            e.RowIndex == The_Snake.head.Position.X &&
+                            e.ColumnIndex == The_Snake.head.Position.Y)
                         {
-                            case "Down":
-                                destX = e.CellBounds.X;
-                                destY = e.CellBounds.Bottom - imageHeight;
-                                break;
-                            case "Up":
-                                destX = e.CellBounds.X;
-                                destY = e.CellBounds.Y;
-                                break;
-                            case "Left":
-                                destX = e.CellBounds.X;
-                                destY = e.CellBounds.Y;
-                                break;
-                            case "Right":
-                                destX = e.CellBounds.Right - imageWidth;
-                                destY = e.CellBounds.Y;
-                                break;
-                        }
-                        Rectangle destRect = new Rectangle(destX, destY, imageWidth, imageHeight);
-                        e.Graphics.DrawImage(_snakeEyeLeftImage, destRect);
-                    }
+                            e.PaintBackground(e.ClipBounds, true);
 
-                    if (_snakeEyeRightImage != null)
-                    {
-                        switch (Snake.direction)
-                        {
-                            case "Down":
-                                destX = e.CellBounds.Right - imageWidth;
-                                destY = e.CellBounds.Bottom - imageHeight;
-                                break;
-                            case "Up":
-                                destX = e.CellBounds.Right - imageWidth;
-                                destY = e.CellBounds.Y;
-                                break;
-                            case "Left":
-                                destX = e.CellBounds.X;
-                                destY = e.CellBounds.Bottom - imageHeight;
-                                break;
-                            case "Right":
-                                destX = e.CellBounds.Right - imageWidth;
-                                destY = e.CellBounds.Bottom - imageHeight;
-                                break;
-                        }
+                            switch (Snake.direction)
+                            {
+                                case "Down":
+                                    destX = e.CellBounds.X;
+                                    destY = e.CellBounds.Bottom - imageHeight;
+                                    break;
+                                case "Up":
+                                    destX = e.CellBounds.X;
+                                    destY = e.CellBounds.Y;
+                                    break;
+                                case "Left":
+                                    destX = e.CellBounds.X;
+                                    destY = e.CellBounds.Y;
+                                    break;
+                                case "Right":
+                                    destX = e.CellBounds.Right - imageWidth;
+                                    destY = e.CellBounds.Y;
+                                    break;
+                            }
+                            Rectangle destRectLeft = new Rectangle(destX, destY, imageWidth, imageHeight);
+                            e.Graphics.DrawImage(_snakeEyeLeftImage, destRectLeft);
 
-                        Rectangle destRect = new Rectangle(destX, destY, imageWidth, imageHeight);
-                        e.Graphics.DrawImage(_snakeEyeRightImage, destRect);
+                            switch (Snake.direction)
+                            {
+                                case "Down":
+                                    destX = e.CellBounds.Right - imageWidth;
+                                    destY = e.CellBounds.Bottom - imageHeight;
+                                    break;
+                                case "Up":
+                                    destX = e.CellBounds.Right - imageWidth;
+                                    destY = e.CellBounds.Y;
+                                    break;
+                                case "Left":
+                                    destX = e.CellBounds.X;
+                                    destY = e.CellBounds.Bottom - imageHeight;
+                                    break;
+                                case "Right":
+                                    destX = e.CellBounds.Right - imageWidth;
+                                    destY = e.CellBounds.Bottom - imageHeight;
+                                    break;
+                            }
+
+                            Rectangle destRectRight = new Rectangle(destX, destY, imageWidth, imageHeight);
+                            e.Graphics.DrawImage(_snakeEyeRightImage, destRectRight);
+
+                            e.Handled = true;
+                        }
                     }
-                    e.Handled = true;
                 }
+            }
+            catch (System.Exception )
+            {
+                e.Handled = true;
             }
         }
 
@@ -334,37 +354,12 @@ namespace Snake_C_
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            if (snakeTimer != null)
-            {
-                snakeTimer.Stop();
-            }
-            this.KeyDown += keyDown;
-            if (!foodExist)
-            {
-                Snake.direction = "Down";
-                The_Snake = null;
-                for (int i = 0; i < dataGridView1.Rows.Count; i++)
-                {
-                    for (int j = 0; j < dataGridView1.Columns.Count; j++)
-                    {
-                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black;
-                    }
-                }
-                score = 0;
-                label2.Text = "Score : " + score.ToString();
-                createSnake();
-                createFood(dataGridView1);
-            }
-            snakeTimer.Start();
-            button1.Enabled = false;
-            button2.Enabled = true;
-        }
-
         public void gameOver()
         {
+            if (foodExist) { playSimpleSound("game_over"); }
+            foodExist = false;
             this.KeyDown -= keyDown;
+          
             if (initial < 10)
             {
                 for (int i = 0; i < dataGridView1.Rows.Count; i++)
@@ -376,12 +371,14 @@ namespace Snake_C_
             }
             else
             {
-                foodExist = false;
                 snakeTimer.Stop();
                 The_Snake = null;
                 DisplayGame_Over(widthSize);
                 dataGridView1.Invalidate();
                 initial = 0;
+                this.dataGridView1.CellPainting -= new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.eyePlacing);
+                _snakeEyeLeftImage = null;
+                _snakeEyeRightImage = null;
                 if (this.InvokeRequired)
                 {
                     this.Invoke(new System.Windows.Forms.MethodInvoker(delegate
@@ -397,7 +394,6 @@ namespace Snake_C_
                 }
             }
         }
-
         public void DisplayGame_Over(int widthSize)
         {
             // Clear the grid by setting all cells to black
@@ -523,12 +519,35 @@ namespace Snake_C_
             // Invalidate the DataGridView to force a redraw
             dataGridView1.Invalidate();
         }
-
-        private void Form1_Load(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-
+            if (snakeTimer != null)
+            {
+                snakeTimer.Stop();
+            }
+            this.KeyDown += keyDown;
+            if (!foodExist)
+            {
+                createImageEyes();
+                this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.eyePlacing);
+                Snake.direction = "Down";
+                The_Snake = null;
+                for (int i = 0; i < dataGridView1.Rows.Count; i++)
+                {
+                    for (int j = 0; j < dataGridView1.Columns.Count; j++)
+                    {
+                        dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black;
+                    }
+                }
+                score = 0;
+                label2.Text = "Score : " + score.ToString();
+                createSnake();
+                createFood(dataGridView1);
+            }
+            snakeTimer.Start();
+            button1.Enabled = false;
+            button2.Enabled = true;
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             button1.Enabled = true;
@@ -543,7 +562,7 @@ namespace Snake_C_
                 CurrentMenuState = MenuOption.DifficultySelection;
                 button3.Text = "Slow";
                 button4.Text = "Average";
-                button5.Text = "Fast";
+                button5.Text = "FAST !";
                 widthSize = 21;
                 heightSize = 21;
             }
@@ -562,7 +581,7 @@ namespace Snake_C_
                 CurrentMenuState = MenuOption.DifficultySelection;
                 button3.Text = "Slow";
                 button4.Text = "Average";
-                button5.Text = "Fast";
+                button5.Text = "FAST !";
                 widthSize = 31;
                 heightSize = 31;
             }
@@ -581,7 +600,7 @@ namespace Snake_C_
                 CurrentMenuState = MenuOption.DifficultySelection;
                 button3.Text = "Slow";
                 button4.Text = "Average";
-                button5.Text = "Fast";
+                button5.Text = "FAST !";
                 widthSize = 41;
                 heightSize = 41;
             }
@@ -593,13 +612,6 @@ namespace Snake_C_
             }
         }
 
-
-        /*      private void startGame()
-{
-
-food = new Circle { X = chaos.Next(2, maxWidth), Y = chaos.Next(2, maxHeight) };
-}*/
-
-
+ 
     }
 }

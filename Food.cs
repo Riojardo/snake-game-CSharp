@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -20,22 +21,27 @@ namespace Snake_C_
         {
             foodColors = new List<Color>
             {
-            Color.Blue,
-            Color.Green,
-            Color.Red,
-            Color.DarkViolet,
-            Color.Cyan,
-            Color.Yellow,
-            Color.Orange,
-            Color.Magenta,
-            Color.LimeGreen,
-            Color.DeepSkyBlue,
-            Color.Gold,
-            Color.Fuchsia,
-            Color.Aqua
+                Color.Blue,
+                Color.Green,
+                Color.Red,
+                Color.DarkViolet,
+                Color.Cyan,
+                Color.Yellow,
+                Color.Orange,
+                Color.Magenta,
+                Color.LimeGreen,
+                Color.DeepSkyBlue,
+                Color.Gold,
+                Color.Fuchsia,
+                Color.Aqua
             };
 
-            bool isCorner = false;
+            bool isCorner = false; 
+            foodColor = foodColors[rnd.Next(foodColors.Count)];
+           while (foodColor == Form1.New_Color || foodColor == Color.White)
+            {
+                foodColor = foodColors[rnd.Next(foodColors.Count)];
+            }
 
             foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));
 
@@ -50,8 +56,7 @@ namespace Snake_C_
             {
                 foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));            
             }
-            int index = rnd.Next(foodColors.Count);
-            foodColor = foodColors[index];
+     
             dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y].Style.BackColor = foodColor;
         }
     }

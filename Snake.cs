@@ -14,9 +14,7 @@ namespace Snake_C_
         public Color snakeColor { get; set; }
         public Head head { get; set; } 
         public List<Point> body { get; set; }
-        public static string direction { get; set; }
-
-        
+        public static string direction { get; set; }  
 
         public Snake(Color S_color, Point S_HeadPosition, List<Point> S_body) 
         {
@@ -78,6 +76,7 @@ namespace Snake_C_
                 dataGridView.Rows[moveSnake.body[moveSnake.body.Count - 1].X].Cells[moveSnake.body[moveSnake.body.Count - 1].Y].Style.BackColor = Color.Black;
                 if (newPositionHead == positionFood)
                 {
+                    Form_1.playSimpleSound("eat_food");
                     movedSnake.body.Add(moveSnake.body[moveSnake.body.Count - 1]);
                     movedSnake.snakeColor = Form1.New_Color;
                     Form1.foodExist = false;

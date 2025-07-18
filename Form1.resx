@@ -121,9 +121,11 @@
     <value>17, 17</value>
   </metadata>
   <data name="label1.Text" xml:space="preserve">
-    <value>Welcome to my Snake game!
+    <value>Welcome to my Snake game !
 
 Controls: Use Z (up), Q (left), S (down), D (right).
+
+Hold the key down to accelerate
 
 Before you begin, please select your desired game board size and choose a difficulty level (this adjusts the snake's speed).</value>
   </data>

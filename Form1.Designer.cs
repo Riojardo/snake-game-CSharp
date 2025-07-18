@@ -157,6 +157,8 @@ namespace Snake_C_
             button5.Name = "button5";
             button5.Size = new Size(196, 46);
             button5.TabIndex = 2;
+            button5.FlatStyle = FlatStyle.Standard;
+            button5.Font = new Font(button5.Font, FontStyle.Bold);
             button5.Text = "BIG !";
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click_1;
@@ -168,6 +170,8 @@ namespace Snake_C_
             button4.Name = "button4";
             button4.Size = new Size(202, 46);
             button4.TabIndex = 1;
+            button4.FlatStyle = FlatStyle.Standard;
+            button4.Font = new Font(button4.Font, FontStyle.Bold);
             button4.Text = "Average";
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click_1;
@@ -179,6 +183,8 @@ namespace Snake_C_
             button3.Name = "button3";
             button3.Size = new Size(217, 46);
             button3.TabIndex = 0;
+            button3.FlatStyle = FlatStyle.Standard;
+            button3.Font = new Font(button3.Font, FontStyle.Bold);
             button3.Text = "Small";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;

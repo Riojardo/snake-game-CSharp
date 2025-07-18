@@ -85,7 +85,7 @@ namespace Snake_C_
                     Form1.createFood(dataGridView);
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex) { MessageBox.Show($"Oh my GOD ! an error : {ex}  in the snake.Move Method!"); }
             return movedSnake;           
         }  
     }   

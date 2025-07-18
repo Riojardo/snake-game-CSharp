@@ -19,45 +19,48 @@ namespace Snake_C_
 
         public Food(Snake moveSnake, DataGridView dataGridView)
         {
-            foodColors = new List<Color>
-            {
-                Color.Blue,
-                Color.Green,
-                Color.Red,
-                Color.DarkViolet,
-                Color.Cyan,
-                Color.Yellow,
-                Color.Orange,
-                Color.Magenta,
-                Color.LimeGreen,
-                Color.DeepSkyBlue,
-                Color.Gold,
-                Color.Fuchsia,
-                Color.Aqua
-            };
+            try
+            { 
+                foodColors = new List<Color>
+                {
+                    Color.Blue,
+                    Color.Green,
+                    Color.Red,
+                    Color.DarkViolet,
+                    Color.Cyan,
+                    Color.Yellow,
+                    Color.Orange,
+                    Color.Magenta,
+                    Color.LimeGreen,
+                    Color.DeepSkyBlue,
+                    Color.Gold,
+                    Color.Fuchsia,
+                    Color.Aqua
+                };
 
-            bool isCorner = false; 
-            foodColor = foodColors[rnd.Next(foodColors.Count)];
-           while (foodColor == Form1.New_Color || foodColor == Color.White)
-            {
+                bool isCorner = false; 
                 foodColor = foodColors[rnd.Next(foodColors.Count)];
+               while (foodColor == Form1.New_Color || foodColor == Color.White)
+                {
+                    foodColor = foodColors[rnd.Next(foodColors.Count)];
+                }
+
+                foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));
+
+                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[0] ? true : isCorner;
+                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[0] ? true : isCorner;
+                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
+                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
+
+                while ((moveSnake.head != null && moveSnake.head.Position == foodPosition) ||
+                       (moveSnake.body != null && moveSnake.body.Contains(foodPosition)) ||
+                       isCorner)
+                {
+                    foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));            
+                }    
+                dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y].Style.BackColor = foodColor;
             }
-
-            foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));
-
-            isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[0] ? true : isCorner;
-            isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[0] ? true : isCorner;
-            isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
-            isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
-
-            while ((moveSnake.head != null && moveSnake.head.Position == foodPosition) ||
-                   (moveSnake.body != null && moveSnake.body.Contains(foodPosition)) ||
-                   isCorner)
-            {
-                foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));            
-            }
-     
-            dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y].Style.BackColor = foodColor;
+            catch (Exception ex) { MessageBox.Show($"Oh my GOD ! an error : {ex}  in the Food Method!"); }
         }
     }
 }

@@ -55,11 +55,12 @@ namespace Snake_C_
 
             createbackground();
             InitializeComponent();
+
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            playSimpleMusic("game_music");
         }
 
         private void StartGameSetup()
@@ -170,7 +171,12 @@ namespace Snake_C_
             string soundLocation= Path.Combine(executableDirectory, "sounds", sound + ".wav");
             SoundPlayer simpleSound = new SoundPlayer(soundLocation);
             simpleSound.Play();
-            //MessageBox.Show(soundLocation);
+        }
+        public void playSimpleMusic(string sound)
+        {
+            string soundLocation = Path.Combine(executableDirectory, "sounds", sound + ".wav");
+            SoundPlayer simpleMusic = new SoundPlayer(soundLocation);
+            simpleMusic.Play();
         }
 
         private void keyDown(object sender, KeyEventArgs e)

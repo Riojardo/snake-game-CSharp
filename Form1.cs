@@ -24,9 +24,11 @@ namespace Snake_C_
         public static int parameterTime;
         static string executableDirectory = AppDomain.CurrentDomain.BaseDirectory;
         string iconePath = Path.Combine(executableDirectory, "images", "snakeIcone.ico");
-        private Snake The_Snake;
-        private Point The_Objective;
-        private Color New_Color;
+        private static Snake The_Snake;
+        private static Point The_Objective;
+        public static Color New_Color;
+        internal static Food The_Food;
+        //private static DataGridView dataGridView1 = new DataGridView();
         public Image _snakeEyeLeftImage;
         public Image _snakeEyeRightImage;
         Color initialSnakeColor = Color.Green;
@@ -53,7 +55,6 @@ namespace Snake_C_
 
             createbackground();
             InitializeComponent();
-
         }
 
         private void StartGameSetup()
@@ -72,9 +73,9 @@ namespace Snake_C_
             }
             SetUpDataGridView();
             dataGridView1.Location = widthSize == 21 ? new Point(150, 150) :
-                                     widthSize == 31 ? new Point(100, 100) : new Point(50, 50); ;
+                                     widthSize == 31 ? new Point(100, 100) : new Point(50, 50);
 
-            dataGridView1.BorderStyle = BorderStyle.Fixed3D;           
+            dataGridView1.BorderStyle = BorderStyle.Fixed3D;
 
             this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.eyePlacing);
             dataGridView1.Invalidate();
@@ -83,7 +84,7 @@ namespace Snake_C_
 
             snakeTimer = new System.Timers.Timer();
             snakeTimer.Interval = parameterTime;
-            snakeTimer.Elapsed += SnakeTimer_Tick; //
+            snakeTimer.Elapsed += SnakeTimer_Tick;
             snakeTimer.AutoReset = true;
 
             button2.Enabled = false;
@@ -98,9 +99,10 @@ namespace Snake_C_
         private void SetUpDataGridView()
         {
             dataGridView1.Visible = false;
+            dataGridView1.AllowUserToAddRows = false;
             dataGridView1.ColumnCount = widthSize;
             dataGridView1.RowCount = heightSize;
-            dataGridView1.RowTemplate.Height = 30;
+            dataGridView1.RowTemplate.Height = 25;
             foreach (DataGridViewColumn column in dataGridView1.Columns)
             {
                 column.Width = 25;
@@ -109,7 +111,6 @@ namespace Snake_C_
             dataGridView1.ReadOnly = true;
             dataGridView1.RowHeadersVisible = false;
             dataGridView1.ColumnHeadersVisible = false;
-            dataGridView1.Rows[0].Visible = false;
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
             dataGridView1.AllowUserToOrderColumns = false;
@@ -123,17 +124,19 @@ namespace Snake_C_
             dataGridView1.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Raised;
             dataGridView1.CellBorderStyle = DataGridViewCellBorderStyle.Single;
             dataGridView1.GridColor = SystemColors.ActiveBorder;
+
+            
             dataGridView1.Width = (dataGridView1.ColumnCount * 25) + 3;
-            dataGridView1.Height = (dataGridView1.RowCount * 25) - 22;
+            dataGridView1.Height = (dataGridView1.RowCount * 25) + 3; 
+
             for (int i = 0; i < dataGridView1.RowCount; i++)
             {
                 for (int j = 0; j < dataGridView1.ColumnCount; j++)
                 {
                     dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black;
-
                 }
             }
-            dataGridView1.GridColor = Color.Gray;
+            dataGridView1.GridColor = Color.Gray; 
 
             dataGridView1.ClearSelection();
             dataGridView1.Update();
@@ -192,24 +195,28 @@ namespace Snake_C_
             timerCounter++;
             try
             {
-                if (The_Snake != null)
+                if (The_Snake != null )
                 {
                     if (The_Snake.body.Contains(The_Snake.head.Position))
                     {
                         gameOver();
                         return;
                     }
-                    if (!foodExist)
+                    if (The_Food != null)
                     {
-                        The_Snake.snakeColor = New_Color;
-                        createFood();
-                    }
-                    The_Snake = Snake.Move(The_Snake, dataGridView1, The_Objective);
-
+                        if (The_Snake.head.Position == The_Food.foodPosition)
+                        {
+                            The_Snake.snakeColor = The_Food.foodColor;
+                        }
+                    }                  
+                    The_Snake = Snake.Move(The_Snake, dataGridView1, The_Objective, this);
                 }
             }
-            catch (System.ArgumentOutOfRangeException)
-            { gameOver(); }
+            catch (Exception outOfRange)
+            {
+                //MessageBox.Show(outOfRange.Message);
+                //gameOver();           
+            }
             if (dataGridView1.InvokeRequired)
             {
                 dataGridView1.Invoke(new System.Windows.Forms.MethodInvoker(delegate
@@ -318,13 +325,13 @@ namespace Snake_C_
                 dataGridView1.Rows[part.X].Cells[part.Y].Style.BackColor = The_Snake.snakeColor;
             }
         }
-
-        public void createFood()
+        public static void createFood(DataGridView dataGridView1)
         {
             Food The_Food = new Food(The_Snake, dataGridView1);
             The_Objective = The_Food.foodPosition;
             New_Color = The_Food.foodColor;
             foodExist = true;
+
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -348,7 +355,7 @@ namespace Snake_C_
                 score = 0;
                 label2.Text = "Score : " + score.ToString();
                 createSnake();
-                createFood();
+                createFood(dataGridView1);
             }
             snakeTimer.Start();
             button1.Enabled = false;
@@ -401,7 +408,6 @@ namespace Snake_C_
                     dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.Black;
                 }
             }
-
             // --- Define the base offsets for centering the entire text block ---
             // The target text block width is 19 cells.
             // The target text block height (assuming 5-cell tall letters + 3 cell vertical spacing) is 5 + 3 + 5 = 13 cells.
@@ -418,7 +424,6 @@ namespace Snake_C_
             // Define the fixed starting rows for each line relative to the startRowOffset
             int baseRowGame = startRowOffset;
             int baseRowOver = startRowOffset + 8; // 5 (letter height) + 3 (vertical spacing) = 8
-
 
             // --- Iterate through each cell and set color based on new, smaller coordinates ---
             for (int i = 0; i < dataGridView1.RowCount; i++)
@@ -455,8 +460,7 @@ namespace Snake_C_
                               (i == baseRowGame + 1 && (j == startColumnOffset + 10 + 1 || j == startColumnOffset + 10 + 2)) || // Diagonals
                               (i == baseRowGame + 2 && (j == startColumnOffset + 10 + 1 || j == startColumnOffset + 10 + 2))) // Diagonals (inner parts)
                                                                                                                               // The original M definition had (1,0),(1,1),(1,3) and (2,0),(2,2),(2,4). Let's use a simpler 4x6 M
-                                                                                                                              // This simplified M below might be better for 4-wide.
-                                                                                                                              // Let's re-use the M from the previous response which was good for 4x6
+                                                                                                                              // This simplified M below might be better for 4-wide.                                                                                                                              // Let's re-use the M from the previous response which was good for 4x6
                     {
                         // M from the previous detailed response (4x6)
                         if (((i >= baseRowGame + 0 && i <= baseRowGame + 5) && (j == startColumnOffset + 10 + 0 || j == startColumnOffset + 10 + 3)) || // Vertical bars
@@ -475,7 +479,6 @@ namespace Snake_C_
                     {
                         dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.White;
                     }
-
                     // Logique pour les lettres "OVER"
                     // O: (4 wide) | V: (4 wide) | E: (4 wide) | R: (4 wide)
                     // Total: (4+1) + (4+1) + (4+1) + 4 = 19 cells.
@@ -517,11 +520,9 @@ namespace Snake_C_
                     }
                 }
             }
-
             // Invalidate the DataGridView to force a redraw
             dataGridView1.Invalidate();
         }
-
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -591,6 +592,7 @@ namespace Snake_C_
                 StartGameSetup();
             }
         }
+
 
         /*      private void startGame()
 {

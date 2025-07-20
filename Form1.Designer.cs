@@ -44,6 +44,7 @@ namespace Snake_C_
             contextMenuStrip1 = new ContextMenuStrip(components);
             label2 = new Label();
             panel1 = new Panel();
+            trackBar1 = new TrackBar();
             panel2 = new Panel();
             label1 = new Label();
             button5 = new Button();
@@ -51,6 +52,7 @@ namespace Snake_C_
             button3 = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar1).BeginInit();
             panel2.SuspendLayout();
             SuspendLayout();
             // 
@@ -110,7 +112,7 @@ namespace Snake_C_
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
             label2.ForeColor = Color.White;
-            label2.Location = new Point(29, 120);
+            label2.Location = new Point(29, 132);
             label2.Name = "label2";
             label2.Size = new Size(73, 21);
             label2.TabIndex = 5;
@@ -119,14 +121,22 @@ namespace Snake_C_
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.Fixed3D;
+            panel1.Controls.Add(trackBar1);
             panel1.Controls.Add(button1);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(label2);
-            panel1.Location = new Point(1382, 58);
+            panel1.Location = new Point(1358, 62);
             panel1.Name = "panel1";
-            panel1.Size = new Size(401, 158);
+            panel1.Size = new Size(401, 185);
             panel1.TabIndex = 6;
             panel1.Visible = false;
+            // 
+            // trackBar1
+            // 
+            trackBar1.Location = new Point(253, 122);
+            trackBar1.Name = "trackBar1";
+            trackBar1.Size = new Size(114, 45);
+            trackBar1.TabIndex = 8;
             // 
             // panel2
             // 
@@ -146,45 +156,42 @@ namespace Snake_C_
             label1.AutoSize = true;
             label1.Location = new Point(118, 32);
             label1.Name = "label1";
-            label1.Size = new Size(644, 75);
+            label1.Size = new Size(644, 105);
             label1.TabIndex = 3;
             label1.Text = resources.GetString("label1.Text");
             // 
             // button5
             // 
+            button5.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             button5.ForeColor = Color.Black;
             button5.Location = new Point(657, 157);
             button5.Name = "button5";
             button5.Size = new Size(196, 46);
             button5.TabIndex = 2;
-            button5.FlatStyle = FlatStyle.Standard;
-            button5.Font = new Font(button5.Font, FontStyle.Bold);
             button5.Text = "BIG !";
             button5.UseVisualStyleBackColor = true;
             button5.Click += button5_Click_1;
             // 
             // button4
             // 
+            button4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             button4.ForeColor = Color.Black;
             button4.Location = new Point(357, 157);
             button4.Name = "button4";
             button4.Size = new Size(202, 46);
             button4.TabIndex = 1;
-            button4.FlatStyle = FlatStyle.Standard;
-            button4.Font = new Font(button4.Font, FontStyle.Bold);
             button4.Text = "Average";
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click_1;
             // 
             // button3
             // 
+            button3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             button3.ForeColor = Color.Black;
             button3.Location = new Point(49, 157);
             button3.Name = "button3";
             button3.Size = new Size(217, 46);
             button3.TabIndex = 0;
-            button3.FlatStyle = FlatStyle.Standard;
-            button3.Font = new Font(button3.Font, FontStyle.Bold);
             button3.Text = "Small";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
@@ -205,6 +212,7 @@ namespace Snake_C_
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar1).EndInit();
             panel2.ResumeLayout(false);
             panel2.PerformLayout();
             ResumeLayout(false);
@@ -226,5 +234,6 @@ namespace Snake_C_
         private Button button5;
         private Button button4;
         private Button button3;
+        private TrackBar trackBar1;
     }
 }

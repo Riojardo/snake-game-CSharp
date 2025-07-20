@@ -22,7 +22,7 @@ namespace Snake_C_
 
         private static System.Timers.Timer snakeTimer;
         public static int parameterTime;
-        static string executableDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        public static string executableDirectory = AppDomain.CurrentDomain.BaseDirectory;
         string iconePath = Path.Combine(executableDirectory, "images", "snakeIcone.ico");
         private static Snake The_Snake;
         private static Point The_Objective;
@@ -38,6 +38,8 @@ namespace Snake_C_
         public static int widthSize;
         public static int heightSize;
         public static bool foodExist = false;
+        public static MusicManager simpleMusic;
+       
 
         public Form1()
         {
@@ -46,8 +48,9 @@ namespace Snake_C_
             this.Dock = DockStyle.Fill;
             this.Text = "Snake Inc.";
             this.Name = "Snake Inc.";
-
             this.Text = "Snake Inc. ";
+
+            this.FormClosing += Form1_Closing;
             if (File.Exists(iconePath))
             {
                 this.Icon = new Icon(iconePath);
@@ -57,10 +60,11 @@ namespace Snake_C_
             InitializeComponent();
 
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
-            playSimpleMusic("game_music");
+            string soundLocation = Path.Combine(Form1.executableDirectory, "sounds", "game_music.wav");
+            simpleMusic = new MusicManager("game_music");
+            simpleMusic.PlayThis(true);        
         }
 
         private void StartGameSetup()
@@ -168,15 +172,9 @@ namespace Snake_C_
 
         public void playSimpleSound(string sound)
         {
-            string soundLocation= Path.Combine(executableDirectory, "sounds", sound + ".wav");
+            string soundLocation = Path.Combine(Form1.executableDirectory, "sounds", sound + ".wav");
             SoundPlayer simpleSound = new SoundPlayer(soundLocation);
             simpleSound.Play();
-        }
-        public void playSimpleMusic(string sound)
-        {
-            string soundLocation = Path.Combine(executableDirectory, "sounds", sound + ".wav");
-            SoundPlayer simpleMusic = new SoundPlayer(soundLocation);
-            simpleMusic.Play();
         }
 
         private void keyDown(object sender, KeyEventArgs e)
@@ -261,7 +259,6 @@ namespace Snake_C_
                 label2.Text = "Score : " + score.ToString();
             }
         }
-
         private void eyePlacing(object sender, DataGridViewCellPaintingEventArgs e)
         {
             try
@@ -359,9 +356,9 @@ namespace Snake_C_
             foodExist = true;
 
         }
-
         public void gameOver()
         {
+            simpleMusic.StopPlaying();
             if (foodExist) { playSimpleSound("game_over"); }
             foodExist = false;
             this.KeyDown -= keyDown;
@@ -399,6 +396,7 @@ namespace Snake_C_
                     button2.Enabled = false;
                 }
             }
+            
         }
         public void DisplayGame_Over(int widthSize)
         {
@@ -534,6 +532,7 @@ namespace Snake_C_
             this.KeyDown += keyDown;
             if (!foodExist)
             {
+                simpleMusic.PlayThis(true);
                 createImageEyes();
                 this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.eyePlacing);
                 Snake.direction = "Down";
@@ -559,6 +558,7 @@ namespace Snake_C_
             button1.Enabled = true;
             snakeTimer.Stop();
             button2.Enabled = false;
+            simpleMusic.SetVolume(1);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -618,6 +618,10 @@ namespace Snake_C_
             }
         }
 
- 
+        private void Form1_Closing(object sender, FormClosingEventArgs e)
+        {
+            simpleMusic.StopPlaying();
+        }
+
     }
 }

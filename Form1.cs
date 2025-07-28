@@ -263,7 +263,7 @@ namespace Snake_C_
         {
             try
             { 
-                if (_snakeEyeLeftImage != null && _snakeEyeRightImage != null)
+                if (_snakeEyeLeftImage != null || _snakeEyeRightImage != null)
                 {
                     int imageWidth = _snakeEyeLeftImage.Width;
                     int imageHeight = _snakeEyeLeftImage.Height;
@@ -558,7 +558,7 @@ namespace Snake_C_
             button1.Enabled = true;
             snakeTimer.Stop();
             button2.Enabled = false;
-            simpleMusic.SetVolume(1);
+            //simpleMusic.SetVolume(1);
         }
 
         private void button3_Click(object sender, EventArgs e)

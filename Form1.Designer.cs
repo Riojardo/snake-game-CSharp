@@ -134,9 +134,12 @@ namespace Snake_C_
             // trackBar1
             // 
             trackBar1.Location = new Point(253, 122);
+            trackBar1.TickStyle = TickStyle.BottomRight;
+            trackBar1.TickFrequency = 1;
             trackBar1.Name = "trackBar1";
             trackBar1.Size = new Size(114, 45);
             trackBar1.TabIndex = 8;
+            trackBar1.Value = 10;
             // 
             // panel2
             // 

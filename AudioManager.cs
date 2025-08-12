@@ -18,7 +18,7 @@ namespace Snake_C_
         private bool IsLooping = true;
         public string FileName;
         public string TrackName;
-        private long lngVolume = 500;
+        private long lngVolume = 0;
 
        public MusicManager(string Name)
         {
@@ -32,6 +32,7 @@ namespace Snake_C_
             SoundPlayer simpleMusic = new SoundPlayer(soundLocation);
             simpleMusic.Play();
         }*/
+
         public void PlayWorker()
         {
             StringBuilder sb = new StringBuilder();
@@ -43,7 +44,7 @@ namespace Snake_C_
             mciSendString("status " + this.TrackName + " length", sb, 255, IntPtr.Zero);
             int length = Convert.ToInt32(sb.ToString());
             int pos = 0;
-            long oldvol = lngVolume;
+            long oldvol = 0;
 
             while (IsPlayed) 
             {
@@ -77,7 +78,7 @@ namespace Snake_C_
                     {
                         System.Diagnostics.Debug.Print("No errors!");
                     }
-                    oldvol = lngVolume;
+                    oldvol =0;
                 }
                 Application.DoEvents();
             }
@@ -98,34 +99,24 @@ namespace Snake_C_
         {
             try
             {
-                if (IsPlayed) // Assuming IsPlayed is the new name for IsBeingPlayed
+                if (IsPlayed) 
                     return;
-
                 if (!File.Exists(FileName))
                 {
-                    // The file does not exist.
-                    // Log this as an error or show a message to the user.
-                    // DO NOT set IsPlayed = true, as nothing is playing.
-                    //frmMain.WriteLog($"Error: Music file not found at '{FileName}'"); // Re-enable logging
-                    MessageBox.Show($"Error: The audio file '{FileName}' was not found.", "Audio Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    IsPlayed = false; // Ensure it's false, nothing is playing.
-                    return; // EXIT THE METHOD if the file doesn't exist.
+                     MessageBox.Show($"Error: The audio file '{FileName}' was not found.", "Audio Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    IsPlayed = false; 
+                    return;
                 }
-
-                // If the file exists, then proceed to set looping and start the worker thread.
                 this.IsLooping = Looping;
                 ThreadStart ts = new ThreadStart(PlayWorker);
                 Thread WorkerThread = new Thread(ts);
                 WorkerThread.Start();
 
-                IsPlayed = true; // Only set to true AFTER the worker thread has been successfully started
-                                 // and is *attempting* to play.
+                IsPlayed = true;                                
             }
             catch (Exception ex)
             {
-                // Catch any exceptions that occur during thread creation or initial setup.
-                //frmMain.WriteLog("Error occurred in PlayThis method: " + ex.Message);
-                IsPlayed = false; // Ensure flag is reset if an error prevents playback
+                IsPlayed = false;
             }
         }
         public void StopPlaying()

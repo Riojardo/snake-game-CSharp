@@ -552,13 +552,15 @@ namespace Snake_C_
             snakeTimer.Start();
             button1.Enabled = false;
             button2.Enabled = true;
+            //simpleMusic.SetVolume(7);
+            //MessageBox.Show(simpleMusic.GetVolume().ToString());
         }
         private void button2_Click(object sender, EventArgs e)
         {
             button1.Enabled = true;
             snakeTimer.Stop();
             button2.Enabled = false;
-            //simpleMusic.SetVolume(1);
+            //simpleMusic.SetVolume(0);         
         }
 
         private void button3_Click(object sender, EventArgs e)

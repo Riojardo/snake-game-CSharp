@@ -18,11 +18,15 @@ namespace Snake_C_
             Etablished
         }
 
+        //Private field into public propiété (ex dans audiomanager) arrive plusieurs fois à check 
         public MenuOption CurrentMenuState = MenuOption.SizeSelection;
 
         private static System.Timers.Timer snakeTimer;
+        //On évite souvent le static avec du public parce que ça peut causer des pbs sur pas mal de programmes -> Peut être le convertir en readonly ou const ? Ou bien jarter le static arrive plusieurs fois à check
+        //Private field into public propiété
         public static int parameterTime;
         public static string executableDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        //Je ferais de "images" une constante pour pas l'utiliser 4 fois 
         string iconePath = Path.Combine(executableDirectory, "images", "snakeIcone.ico");
         private static Snake The_Snake;
         private static Point The_Objective;
@@ -49,7 +53,7 @@ namespace Snake_C_
             this.Text = "Snake Inc.";
             this.Name = "Snake Inc.";
             this.Text = "Snake Inc. ";
-
+            // J'ai modifié ta méthode "Form1_Closing" pour expliciter le fait que "object" puisse accepter un nul parce que formclosingeventhandler attend un object nullable 
             this.FormClosing += Form1_Closing;
             if (File.Exists(iconePath))
             {
@@ -62,6 +66,7 @@ namespace Snake_C_
         }
         private void Form1_Load(object sender, EventArgs e)
         {
+            //Variable non utilisée, work in progress ? 
             string soundLocation = Path.Combine(Form1.executableDirectory, "sounds", "game_music.wav");
             simpleMusic = new MusicManager("game_music");
             simpleMusic.PlayThis(true);        
@@ -70,9 +75,11 @@ namespace Snake_C_
         private void StartGameSetup()
         {
             panel1.Visible = true;
+            //Same que pour Form1_Closing
             this.Load += new System.EventHandler(this.Loading);
             createImageEyes();
             SetUpDataGridView();
+            //On aime pas trop les ternaires nesté normalement ahah c'est un peu chiant à lire, donc on passe svt ça en if/else
             dataGridView1.Location = widthSize == 21 ? new Point(150, 150) :
                                      widthSize == 31 ? new Point(100, 100) : new Point(50, 50);
 
@@ -158,7 +165,7 @@ namespace Snake_C_
             dataGridView1.Visible = true;
         }
 
-        private void Loading(object sender, EventArgs e)
+        private void Loading(object? sender, EventArgs e)
         {
             if (dataGridView1.ColumnCount > 0 && dataGridView1.RowCount > 0)
             {
@@ -169,7 +176,7 @@ namespace Snake_C_
                 dataGridView1.ClearSelection();
             }
         }
-
+        //Comme playsimplesound utilise pas de data instanciée tu pourrait le passer en static
         public void playSimpleSound(string sound)
         {
             string soundLocation = Path.Combine(Form1.executableDirectory, "sounds", sound + ".wav");
@@ -234,6 +241,8 @@ namespace Snake_C_
                     The_Snake = Snake.Move(The_Snake, dataGridView1, The_Objective, this);
                 }
             }
+            //C'est cool les catchs mdr Si c'est un choix de pas gérer l'exception, on aime bien commenter et dire pourquoi y'a pas besoin de la gérer dans ce cas-ci 
+
             catch (Exception outOfRange)
             { }
             if (dataGridView1.InvokeRequired)
@@ -259,17 +268,19 @@ namespace Snake_C_
                 label2.Text = "Score : " + score.ToString();
             }
         }
+
+        //C'est une grosse méthode ahah je la refactoriserais pour réduire sa complexité, elle est un peu lourde à elle seule
         private void eyePlacing(object sender, DataGridViewCellPaintingEventArgs e)
         {
             try
-            { 
+            {
                 if (_snakeEyeLeftImage != null || _snakeEyeRightImage != null)
                 {
                     int imageWidth = _snakeEyeLeftImage.Width;
                     int imageHeight = _snakeEyeLeftImage.Height;
                     int destX = 0;
                     int destY = 0;
-
+                    //Vu que le premier if ne fait rien seul, je le mergerais avec le suivant
                     if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
                     {
                         if (The_Snake != null &&
@@ -284,6 +295,7 @@ namespace Snake_C_
                                     destX = e.CellBounds.X;
                                     destY = e.CellBounds.Bottom - imageHeight;
                                     break;
+                                // Tu pourrais merge up & left, mais ça pourrait se discuter avec le fait que c'est + facilement modifiable si tu le veux comme ça 
                                 case "Up":
                                     destX = e.CellBounds.X;
                                     destY = e.CellBounds.Y;
@@ -328,7 +340,7 @@ namespace Snake_C_
                     }
                 }
             }
-            catch (System.Exception )
+            catch (System.Exception)
             {
                 e.Handled = true;
             }
@@ -561,6 +573,7 @@ namespace Snake_C_
             //simpleMusic.SetVolume(1);
         }
 
+        //Utilisation de champ statique dans une méthode non statique -> rends la méthode statique si ça a du sens ou enlève le statique aux champs
         private void button3_Click(object sender, EventArgs e)
         {
             if (CurrentMenuState == MenuOption.SizeSelection)
@@ -579,7 +592,7 @@ namespace Snake_C_
                 StartGameSetup();
             }
         }
-
+        //Same as above
         private void button4_Click_1(object sender, EventArgs e)
         {
             if (CurrentMenuState == MenuOption.SizeSelection)
@@ -618,7 +631,7 @@ namespace Snake_C_
             }
         }
 
-        private void Form1_Closing(object sender, FormClosingEventArgs e)
+        private void Form1_Closing(object? sender, FormClosingEventArgs e)
         {
             simpleMusic.StopPlaying();
         }

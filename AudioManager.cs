@@ -14,6 +14,14 @@ namespace Snake_C_
     public class MusicManager
     {
 
+        //    Mets les fields en privé et encapsule les dans une propriété publique -> i.e
+        //       private int myValue;  // private field
+
+        //    public int MyValue    // public property to access the private field
+        //    {
+        //        get { return myValue; }
+        //        set { myValue = value; }
+        //    }
         public bool IsPlayed = false;
         private bool IsLooping = true;
         public string FileName;
@@ -35,19 +43,28 @@ namespace Snake_C_
         public void PlayWorker()
         {
             StringBuilder sb = new StringBuilder();
+            //Tu n'utilises pas la variable "result", peut être la supprimer ? Ou job en cours ? 
             int result = mciSendString("open \"" + FileName + "\" type waveaudio  alias " + this.TrackName, sb, 0, IntPtr.Zero);
+            //Ce serait plus safe de capturer le code d'erreur quand on utilise une méthode prebuilt comme celle ci -> attribuer la méthode à result comme au dessus et utiliser result pour check ie:
+            // if (result != 0)
+            // {
+            //     Console.WriteLine($"Failed to open audio: error code {result}");
+            //     return;
+            // }
             mciSendString("play " + this.TrackName, sb, 0, IntPtr.Zero);
             IsPlayed = true;
 
             sb = new StringBuilder();
+            //Same pour le catch d'erreur
             mciSendString("status " + this.TrackName + " length", sb, 255, IntPtr.Zero);
             int length = Convert.ToInt32(sb.ToString());
             int pos = 0;
             long oldvol = lngVolume;
-
+            // Je peux me tromper et probablement work in progress mais pour l'instant j'ai l'impression que "isplayed" est toujours vrai vu que ça a l'air de se lancer pour le build du jeu. Si le but est que ce soit tout le temps vrai, pas besoin de while vu que c'est appelé après play this qui catch l'erreur
             while (IsPlayed) 
             {
                 sb = new StringBuilder();
+                //Same pour le catch d'erreur
                 mciSendString("status " + this.TrackName + " position", sb, 255, IntPtr.Zero);
                 pos = Convert.ToInt32(sb.ToString());
                 if (pos >= length)
@@ -59,6 +76,7 @@ namespace Snake_C_
                     }
                     else
                     {
+                        //Same pour le catch d'erreur
                         mciSendString("play " + this.TrackName + " from 0", sb, 0, IntPtr.Zero);
                     }
                 }
@@ -81,6 +99,7 @@ namespace Snake_C_
                 }
                 Application.DoEvents();
             }
+            //Same pour le catch d'erreur
             mciSendString("stop " + this.TrackName, sb, 0, IntPtr.Zero);
             mciSendString("close " + this.TrackName, sb, 0, IntPtr.Zero);
         }
@@ -132,17 +151,23 @@ namespace Snake_C_
         {
             IsPlayed = false;
         }
-
+        // On aime bien normalement ajouter le charset au P/Invoke argument pour éviter de potentiels bugs s'il y arrive pas par défaut : ie: [DllImport("winmm.dll", CharSet = CharSet.Unicode)]
         [DllImport("winmm.dll")]
         static extern Int32 mciSendString(string command, StringBuilder buffer, int bufferSize, IntPtr hwndCallback);
-
+        //On préfère normalement utiliser une librairie quand c'est pour appeler une méthode -> Ca permet d'opti au lancement (ex ici : 
+        //[LibraryImport("winmm.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+        // [return: MarshalAs(UnmanagedType.Bool)]
+        // static partial bool PlaySound(string pszSound, IntPtr hmod, uint fdwSound);)
         [DllImport("winmm.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
         static extern bool PlaySound(
             string pszSound,
             IntPtr hMod,
             SoundFlags sf);
 
+        // L'attribut "Flags" s'utilise quand on utilise des valeurs qui sont des puissances de deux, or ici ce n'est pas le cas de certaines d'entre elles SND_RESOURCE = 0x00040004 par ex. -> Soit supprimer Flags soit corrigé pour que ça le devienne ? 
         [Flags]
+        // Si tu supprime flags faudrait rename soundflags
+        // Pas besoin de préciser int, c'est le type par défaut d'une enum
         public enum SoundFlags : int
         {
             SND_SYNC = 0x0000,  // play synchronously (default)

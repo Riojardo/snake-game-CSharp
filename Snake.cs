@@ -18,6 +18,7 @@ namespace Snake_C_
 
         public Snake(Color S_color, Point S_HeadPosition, List<Point> S_body) 
         {
+            //Les "this" sont superflus
             this.snakeColor = S_color;
             this.head = new Head(S_HeadPosition); 
             this.body = S_body;
@@ -63,7 +64,8 @@ namespace Snake_C_
                     return moveSnake;
                 }
                 newBody.Add(movedHead);
-                for (int i = 0; i < moveSnake.body.Count() - 1; i++)
+                //Utilise plutôt la propriété que la méthode -> La méthode énumère la collection à chaque fois la proriété pas + code plus lisible 
+                for (int i = 0; i < moveSnake.body.Count - 1; i++)
                 {
                     newBody.Add(moveSnake.body[i]);
                 }

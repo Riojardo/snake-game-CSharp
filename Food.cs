@@ -46,8 +46,10 @@ namespace Snake_C_
                 }
 
                 foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));
-
-                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[0] ? true : isCorner;
+                //1. Je changerais dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] par une variable, pour rendre la chose plus lisible 
+                //2. isCorner étant déjà un boolean je changerai par isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[0] sans la fin vu que déjà sous entendu par le "==" comme dans ma modif du premier exemple)
+                //3. enfin pour éviter la redondance sur le isCorner je mettrais plutôt isCorner = "première ligne avec modif" || "deuxième ligne avec modif" etc. 
+                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[0];
                 isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[0] ? true : isCorner;
                 isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
                 isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;

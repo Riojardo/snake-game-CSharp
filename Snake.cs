@@ -18,10 +18,9 @@ namespace Snake_C_
 
         public Snake(Color S_color, Point S_HeadPosition, List<Point> S_body) 
         {
-            //Les "this" sont superflus
-            this.snakeColor = S_color;
-            this.head = new Head(S_HeadPosition); 
-            this.body = S_body;
+            snakeColor = S_color;
+            head = new Head(S_HeadPosition); 
+            body = S_body;
         }
         public class Head
         {
@@ -31,7 +30,7 @@ namespace Snake_C_
 
             public Head(Point position)
             {
-                this.Position = position;             
+                Position = position;             
             }
         }
         public static Snake Move(Snake moveSnake, DataGridView dataGridView, Point positionFood, Form1 Form_1)
@@ -64,7 +63,7 @@ namespace Snake_C_
                     return moveSnake;
                 }
                 newBody.Add(movedHead);
-                //Utilise plutôt la propriété que la méthode -> La méthode énumère la collection à chaque fois la proriété pas + code plus lisible 
+
                 for (int i = 0; i < moveSnake.body.Count - 1; i++)
                 {
                     newBody.Add(moveSnake.body[i]);
@@ -77,10 +76,10 @@ namespace Snake_C_
                 }
                 dataGridView.Rows[moveSnake.body[moveSnake.body.Count - 1].X].Cells[moveSnake.body[moveSnake.body.Count - 1].Y].Style.BackColor = Color.Black;
                 if (newPositionHead == positionFood)
-                {
-                    Form_1.playSimpleSound("eat_food");
+                {                 
                     movedSnake.body.Add(moveSnake.body[moveSnake.body.Count - 1]);
                     movedSnake.snakeColor = Form1.New_Color;
+                    Form1.playSimpleSound("eat_food");
                     Form1.foodExist = false;
                     Form1.score++;
                     Form1.The_Food = null;

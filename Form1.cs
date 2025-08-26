@@ -20,7 +20,6 @@ namespace Snake_C_
 
         //Private field into public propiété (ex dans audiomanager) arrive plusieurs fois à check 
         public MenuOption CurrentMenuState = MenuOption.SizeSelection;
-
         private static System.Timers.Timer snakeTimer;
         //On évite souvent le static avec du public parce que ça peut causer des pbs sur pas mal de programmes -> Peut être le convertir en readonly ou const ? Ou bien jarter le static arrive plusieurs fois à check
         //Private field into public propiété
@@ -42,8 +41,8 @@ namespace Snake_C_
         public static int widthSize;
         public static int heightSize;
         public static bool foodExist = false;
-        public static MusicManager simpleMusic;
-       
+        public static MusicManager simpleMusic; 
+        
 
         public Form1()
         {
@@ -59,17 +58,16 @@ namespace Snake_C_
             {
                 this.Icon = new Icon(iconePath);
             }
-
             createbackground();
             InitializeComponent();
-
         }
         private void Form1_Load(object sender, EventArgs e)
         {
             //Variable non utilisée, work in progress ? 
-            string soundLocation = Path.Combine(Form1.executableDirectory, "sounds", "game_music.wav");
+            //string soundLocation = Path.Combine(Form1.executableDirectory, "sounds", "game_music.wav");
             simpleMusic = new MusicManager("game_music");
-            simpleMusic.PlayThis(true);        
+            simpleMusic.PlayThis(true);
+
         }
 
         private void StartGameSetup()
@@ -79,9 +77,9 @@ namespace Snake_C_
             this.Load += new System.EventHandler(this.Loading);
             createImageEyes();
             SetUpDataGridView();
-            //On aime pas trop les ternaires nesté normalement ahah c'est un peu chiant à lire, donc on passe svt ça en if/else
             dataGridView1.Location = widthSize == 21 ? new Point(150, 150) :
-                                     widthSize == 31 ? new Point(100, 100) : new Point(50, 50);
+                                     widthSize == 31 ? new Point(100, 100) : 
+                                     new Point(50, 50);
 
             dataGridView1.BorderStyle = BorderStyle.Fixed3D;
 
@@ -92,9 +90,15 @@ namespace Snake_C_
             snakeTimer = new System.Timers.Timer();
             snakeTimer.Interval = parameterTime;
             snakeTimer.Elapsed += SnakeTimer_Tick;
+            trackBar1.ValueChanged += trackbar1_ValueChanged;
             snakeTimer.AutoReset = true;
 
             button2.Enabled = false;
+            
+        }
+        private void trackbar1_ValueChanged(object sender, EventArgs e)
+        {
+            simpleMusic.Volume = trackBar1.Value * 50;
         }
 
         private void createImageEyes()
@@ -111,7 +115,6 @@ namespace Snake_C_
                 _snakeEyeRightImage = Image.FromFile(rightImagePath);
             }
         }
-
         private void createbackground()
         {
             string imagePath = Path.Combine(executableDirectory, "images", "snakide.png");
@@ -176,8 +179,7 @@ namespace Snake_C_
                 dataGridView1.ClearSelection();
             }
         }
-        //Comme playsimplesound utilise pas de data instanciée tu pourrait le passer en static
-        public void playSimpleSound(string sound)
+        public static void playSimpleSound(string sound)
         {
             string soundLocation = Path.Combine(Form1.executableDirectory, "sounds", sound + ".wav");
             SoundPlayer simpleSound = new SoundPlayer(soundLocation);
@@ -241,10 +243,10 @@ namespace Snake_C_
                     The_Snake = Snake.Move(The_Snake, dataGridView1, The_Objective, this);
                 }
             }
-            //C'est cool les catchs mdr Si c'est un choix de pas gérer l'exception, on aime bien commenter et dire pourquoi y'a pas besoin de la gérer dans ce cas-ci 
-
             catch (Exception outOfRange)
-            { }
+            {
+                MessageBox.Show("Dafuk ! an error : 'outOfRange' in the SnakeTimer_Tick method :0 !");
+            }
             if (dataGridView1.InvokeRequired)
             {
                 dataGridView1.Invoke(new System.Windows.Forms.MethodInvoker(delegate
@@ -268,21 +270,17 @@ namespace Snake_C_
                 label2.Text = "Score : " + score.ToString();
             }
         }
-
-        //C'est une grosse méthode ahah je la refactoriserais pour réduire sa complexité, elle est un peu lourde à elle seule
         private void eyePlacing(object sender, DataGridViewCellPaintingEventArgs e)
         {
             try
             {
-                if (_snakeEyeLeftImage != null || _snakeEyeRightImage != null)
+                if ((_snakeEyeLeftImage != null || _snakeEyeRightImage != null) && (e.RowIndex >= 0 && e.ColumnIndex >= 0))
                 {
                     int imageWidth = _snakeEyeLeftImage.Width;
                     int imageHeight = _snakeEyeLeftImage.Height;
                     int destX = 0;
                     int destY = 0;
-                    //Vu que le premier if ne fait rien seul, je le mergerais avec le suivant
-                    if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
-                    {
+                   
                         if (The_Snake != null &&
                             e.RowIndex == The_Snake.head.Position.X &&
                             e.ColumnIndex == The_Snake.head.Position.Y)
@@ -295,7 +293,6 @@ namespace Snake_C_
                                     destX = e.CellBounds.X;
                                     destY = e.CellBounds.Bottom - imageHeight;
                                     break;
-                                // Tu pourrais merge up & left, mais ça pourrait se discuter avec le fait que c'est + facilement modifiable si tu le veux comme ça 
                                 case "Up":
                                     destX = e.CellBounds.X;
                                     destY = e.CellBounds.Y;
@@ -337,8 +334,7 @@ namespace Snake_C_
 
                             e.Handled = true;
                         }
-                    }
-                }
+                    }             
             }
             catch (System.Exception)
             {
@@ -366,7 +362,6 @@ namespace Snake_C_
             The_Objective = The_Food.foodPosition;
             New_Color = The_Food.foodColor;
             foodExist = true;
-
         }
         public void gameOver()
         {
@@ -532,7 +527,6 @@ namespace Snake_C_
                     }
                 }
             }
-            // Invalidate the DataGridView to force a redraw
             dataGridView1.Invalidate();
         }
         private void button1_Click(object sender, EventArgs e)
@@ -544,7 +538,8 @@ namespace Snake_C_
             this.KeyDown += keyDown;
             if (!foodExist)
             {
-                simpleMusic.PlayThis(true);
+                simpleMusic.Volume = trackBar1.Value * 50;
+                //simpleMusic.PlayThis(true);
                 createImageEyes();
                 this.dataGridView1.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.eyePlacing);
                 Snake.direction = "Down";
@@ -573,68 +568,44 @@ namespace Snake_C_
             //simpleMusic.SetVolume(1);
         }
 
-        //Utilisation de champ statique dans une méthode non statique -> rends la méthode statique si ça a du sens ou enlève le statique aux champs
-        private void button3_Click(object sender, EventArgs e)
+        public void effectButtonParameter (int size, int speed, object sender)
         {
-            if (CurrentMenuState == MenuOption.SizeSelection)
+            //simpleMusic.Volume = (400);
+            Form1 instanceForm1 = ((Button)sender).FindForm() as Form1;
+            if (instanceForm1.CurrentMenuState == MenuOption.SizeSelection)
             {
-                CurrentMenuState = MenuOption.DifficultySelection;
-                button3.Text = "Slow";
-                button4.Text = "Average";
-                button5.Text = "FAST !";
-                widthSize = 21;
-                heightSize = 21;
+                instanceForm1.CurrentMenuState = MenuOption.DifficultySelection;
+                instanceForm1.button3.Text = "Slow";
+                instanceForm1.button4.Text = "Average";
+                instanceForm1.button5.Text = "FAST !";
+                Form1.widthSize = size;
+                Form1.heightSize = size;
             }
-            else if (CurrentMenuState == MenuOption.DifficultySelection)
+            else if (instanceForm1.CurrentMenuState == MenuOption.DifficultySelection)
             {
-                parameterTime = 333;
-                panel2.Visible = false;
-                StartGameSetup();
+                parameterTime = speed;
+                instanceForm1.panel2.Visible = false;
+                instanceForm1.StartGameSetup();
             }
         }
-        //Same as above
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.effectButtonParameter(21, 333, (Button)sender);
+        }
+
         private void button4_Click_1(object sender, EventArgs e)
         {
-            if (CurrentMenuState == MenuOption.SizeSelection)
-            {
-                CurrentMenuState = MenuOption.DifficultySelection;
-                button3.Text = "Slow";
-                button4.Text = "Average";
-                button5.Text = "FAST !";
-                widthSize = 31;
-                heightSize = 31;
-            }
-            else if (CurrentMenuState == MenuOption.DifficultySelection)
-            {
-                parameterTime = 250;
-                panel2.Visible = false;
-                StartGameSetup();
-            }
+            this.effectButtonParameter(31, 250, (Button)sender);
         }
 
         private void button5_Click_1(object sender, EventArgs e)
         {
-            if (CurrentMenuState == MenuOption.SizeSelection)
-            {
-                CurrentMenuState = MenuOption.DifficultySelection;
-                button3.Text = "Slow";
-                button4.Text = "Average";
-                button5.Text = "FAST !";
-                widthSize = 41;
-                heightSize = 41;
-            }
-            else if (CurrentMenuState == MenuOption.DifficultySelection)
-            {
-                parameterTime = 166;
-                panel2.Visible = false;
-                StartGameSetup();
-            }
+            this.effectButtonParameter(41, 166, (Button)sender);
         }
 
         private void Form1_Closing(object? sender, FormClosingEventArgs e)
         {
             simpleMusic.StopPlaying();
         }
-
     }
 }

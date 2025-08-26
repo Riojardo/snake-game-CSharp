@@ -33,3 +33,12 @@ C:\Users\Robin\source\repos\snake-game-CSharp\obj\Debug\net8.0-windows8.0\refint
 C:\Users\Robin\source\repos\snake-game-CSharp\obj\Debug\net8.0-windows8.0\Snake_Csharp.pdb
 C:\Users\Robin\source\repos\snake-game-CSharp\obj\Debug\net8.0-windows8.0\Snake_Csharp.genruntimeconfig.cache
 C:\Users\Robin\source\repos\snake-game-CSharp\obj\Debug\net8.0-windows8.0\ref\Snake_Csharp.dll
+C:\Users\Robin\source\repos\snake-game-CSharp\bin\Debug\net8.0-windows8.0\NAudio.dll
+C:\Users\Robin\source\repos\snake-game-CSharp\bin\Debug\net8.0-windows8.0\NAudio.Asio.dll
+C:\Users\Robin\source\repos\snake-game-CSharp\bin\Debug\net8.0-windows8.0\NAudio.Core.dll
+C:\Users\Robin\source\repos\snake-game-CSharp\bin\Debug\net8.0-windows8.0\NAudio.Midi.dll
+C:\Users\Robin\source\repos\snake-game-CSharp\bin\Debug\net8.0-windows8.0\NAudio.Wasapi.dll
+C:\Users\Robin\source\repos\snake-game-CSharp\bin\Debug\net8.0-windows8.0\NAudio.WinForms.dll
+C:\Users\Robin\source\repos\snake-game-CSharp\bin\Debug\net8.0-windows8.0\NAudio.WinMM.dll
+C:\Users\Robin\source\repos\snake-game-CSharp\obj\Debug\net8.0-windows8.0\Snake_Csharp.csproj.AssemblyReference.cache
+C:\Users\Robin\source\repos\snake-game-CSharp\obj\Debug\net8.0-windows8.0\Snake_Cs.23702E5B.Up2Date

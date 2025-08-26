@@ -46,19 +46,19 @@ namespace Snake_C_
                 }
 
                 foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));
-
-                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[0] ? true : isCorner;
-                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[0] ? true : isCorner;
-                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[0].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
-                isCorner = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y] == dataGridView.Rows[dataGridView.RowCount - 1].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
+                DataGridViewCell cell_DGV = dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y];
+                isCorner = cell_DGV == dataGridView.Rows[0].Cells[0];
+                isCorner = cell_DGV == dataGridView.Rows[dataGridView.RowCount - 1].Cells[0] ? true : isCorner;
+                isCorner = cell_DGV == dataGridView.Rows[0].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
+                isCorner = cell_DGV == dataGridView.Rows[dataGridView.RowCount - 1].Cells[dataGridView.ColumnCount - 1] ? true : isCorner;
 
                 while ((moveSnake.head != null && moveSnake.head.Position == foodPosition) ||
                        (moveSnake.body != null && moveSnake.body.Contains(foodPosition)) ||
                        isCorner)
                 {
                     foodPosition = new Point(rnd.Next(dataGridView.ColumnCount), rnd.Next(dataGridView.RowCount));            
-                }    
-                dataGridView.Rows[foodPosition.X].Cells[foodPosition.Y].Style.BackColor = foodColor;
+                }
+                cell_DGV.Style.BackColor = foodColor;
             }
             catch (Exception ex) { MessageBox.Show($"Oh my GOD ! an error : {ex}  in the Food Method!"); }
         }

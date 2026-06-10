@@ -18,20 +18,16 @@ namespace Snake_C_
             Etablished
         }
 
-        //Private field into public propiété (ex dans audiomanager) arrive plusieurs fois à check 
+
         public MenuOption CurrentMenuState = MenuOption.SizeSelection;
         private static System.Timers.Timer snakeTimer;
-        //On évite souvent le static avec du public parce que ça peut causer des pbs sur pas mal de programmes -> Peut être le convertir en readonly ou const ? Ou bien jarter le static arrive plusieurs fois à check
-        //Private field into public propiété
         public static int parameterTime;
         public static string executableDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        //Je ferais de "images" une constante pour pas l'utiliser 4 fois 
         string iconePath = Path.Combine(executableDirectory, "images", "snakeIcone.ico");
         private static Snake The_Snake;
         private static Point The_Objective;
         public static Color New_Color;
         internal static Food The_Food;
-        //private static DataGridView dataGridView1 = new DataGridView();
         public Image _snakeEyeLeftImage;
         public Image _snakeEyeRightImage;
         Color initialSnakeColor = Color.Green;
@@ -43,7 +39,6 @@ namespace Snake_C_
         public static bool foodExist = false;
         public static MusicManager simpleMusic; 
         
-
         public Form1()
         {
             this.DoubleBuffered = true;
@@ -52,7 +47,6 @@ namespace Snake_C_
             this.Text = "Snake Inc.";
             this.Name = "Snake Inc.";
             this.Text = "Snake Inc. ";
-            // J'ai modifié ta méthode "Form1_Closing" pour expliciter le fait que "object" puisse accepter un nul parce que formclosingeventhandler attend un object nullable 
             this.FormClosing += Form1_Closing;
             if (File.Exists(iconePath))
             {
